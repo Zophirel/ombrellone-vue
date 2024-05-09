@@ -1,0 +1,74 @@
+form {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.errorMessage {
+    margin-top: 0;
+    list-style: none;
+    text-align: start;
+    font-size: 13px;
+    color: red;
+    width: fit-content;
+    padding-left: 3px;
+    max-width: 200px;
+    text-wrap: wrap;
+}
+
+.inputError {
+    border: 2px solid red !important;
+}
+
+#signUp, #lostPass, #login{
+    font-size: 14px;
+    margin-bottom: 0px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+#lostPass{
+    margin-top: 20px;
+}
+
+.formWithMessage {
+    padding: 0 30px 30px 30px !important; 
+}
+
+label {
+    font-size: 16px;
+    text-align: start;
+    margin: 0 0 1.4vh 0;
+}
+
+input[type=button] {
+    border: none;
+    height: 40px;
+    width: auto;
+    margin-top: 20px;
+    background-color: #33A8CC;
+    border-radius: 5px;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+
+input[type=text], 
+input[type=password],
+input[type=tel]{
+    height: 30px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    padding: 0 15px;
+}
+
+input[type="text"],
+input[type="tel"]{
+    border: 2px solid #655a5a;
+}
+
+    
+.passwordCtn {
+    border: 2px solid #655a5a;
+}
