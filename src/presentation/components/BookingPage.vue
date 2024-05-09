@@ -21,15 +21,15 @@
     
   
     <div v-show="!this.isCalendarOpen" class="center-ctn">
-      
+  
       <div v-show="!this.isCalendarOpen" class="ombrelloni-ctn">
-        <Ombrellone :gridId="n.toString()" v-for="n in this.getGridDimension(this.numberOfUmbrella)[0]" @click="openModal"/>
+        <Ombrellone :gridId="filteredbookingPerPlaceMap" v-for="n in this.getGridDimension(this.numberOfUmbrella)[0]" @click="openModal"/>
       </div>
-
+  
       <div class="middle-line" v-if="this.numberOfUmbrella > 80"></div>
       
       <div class="ombrelloni-ctn" v-if="this.numberOfUmbrella > 80">
-        <Ombrellone :gridId="(n + this.getGridDimension(this.numberOfUmbrella)[0]).toString()" v-for="n in this.getGridDimension(this.numberOfUmbrella)[1]" @click="openModal"/>
+        <Ombrellone :gridId="filteredbookingPerPlaceMap" v-for="n in this.getGridDimension(this.numberOfUmbrella)[1]" @click="openModal"/>
       </div>
 
     </div>
@@ -41,26 +41,44 @@
 import Calendar from "./Calendar.vue";
 import Ombrellone from "./Ombrellone.vue";
 import { useUserStore } from '../../domain/user/userStore';
-
+import { usePlaceStore } from "../../domain/place/placeStore";
+import Place from "../../domain/place/place";
+import { toRaw } from "vue";
 export default {
   name: "BookingPage",
   emits: ["openModal", "toggleCalendar"],
 
   props: {
     date: Date,
-    numberOfUmbrella: Number
+    numberOfUmbrella: Number,
   },
 
   setup(){
     const userStore = useUserStore();
-    return {userStore};
+    const placeStore = usePlaceStore();
+   
+    let bookingPerPlace = placeStore.getBookingPerPlace;
+     
+    let filteredbookingPerPlace = bookingPerPlace.filter((elem) => {
+      if(toRaw(elem) instanceof Place){
+        return toRaw(elem);
+      }
+    });
+
+
+    const filteredbookingPerPlaceMap = new Map();
+    filteredbookingPerPlace.map((elem) => {
+      filteredbookingPerPlaceMap.set(`${elem.index}${elem.row}`, {beachId: elem.beachId, reservations: elem.reservations});
+    });
+
+    return {userStore, placeStore, filteredbookingPerPlaceMap};
   },
 
   mounted() {
     console.log("mounted");
     this.setDate();
     this.mounted = true;
-    console.log(this.userStore.isUserLogged);
+
   },
 
   data() {
@@ -69,7 +87,8 @@ export default {
       localDate: {formatted: null, date: null},
       isCalendarOpen: false,
       isCalendarAnimationFinished: false,
-      closeCalendarClick: false
+      closeCalendarClick: false,
+  
     };
   },
 
@@ -137,7 +156,7 @@ export default {
         let downRoundedNum = upRoundedNum;
         let lastDigitUpRoundedNum = upRoundedNum % 10;
         
-        // If division is not integer the downRoundNumber will decrease 
+        // If division is not integer the downRoundNumber will have to decrease 
         // es: 91 / 2 = 45.5 -> math.round(4.5) = 46 -> 91 = 46 + 45  
         if(!Number.isInteger(number/2)){
             downRoundedNum--;

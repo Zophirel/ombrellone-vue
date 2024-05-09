@@ -15,7 +15,7 @@ const routes = [
       component: BookingPage,  
       props: {
         date: new Date("6-28-24"), 
-        numberOfUmbrella: 152
+        numberOfUmbrella: 150
       },
       meta: { transition: 'booking-in-bottom' }
     },  

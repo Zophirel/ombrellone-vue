@@ -3,19 +3,24 @@
         <div id="modal">
             <div id="close" @click="this.$emit('closeModal')">x</div>
             <div class="user-info">
+                <label>Nome e Congnome</label>
+                <input type="text" class="input" :placeholder="fullName" disabled>
+            </div>
+         
+            <div class="user-info">
                 <label>Data</label>
                 <Calendar @resetDate="resetDate()" @setDateForAvaliablePlace="setCalendarDate"/>
             </div>
 
+            
             <div class="user-info">
                 <label>Posto</label>
-                <PlaceList :date="date" />
+                <PlaceList :date="date"/>
+                <p>o</p>
+                <button @click="goToBooking()"> <img src="/src/assets/map.svg" alt=""> Usa mappa</button>
             </div>
                  
-            <div class="user-info">
-                <label>Nome e Congnome</label>
-                <input type="text" class="input" :placeholder="fullName" disabled>
-            </div>
+  
 
             <SeatCounter @addChair="addChair" @removeChair="removeChair"/>
             
@@ -34,11 +39,27 @@
     import SeatCounter from '../SeatCounter.vue';    
     import Calendar from './Calendar.vue';
     import PlaceList from './PlaceList.vue';
+    import { useRoute, useRouter } from 'vue-router'
+
     export default {
         name: 'ReservationModal',
         emits: ["closeModal"],
         props: {
             "fullName" : String,
+        },
+
+        setup(){
+            
+            const router = useRouter();
+            const goToBooking = () => {
+                
+                router.push({
+                    name: "Booking",
+                });
+            };
+
+            return { goToBooking }
+
         },
 
         data(){
@@ -75,7 +96,7 @@
             book() {
                 let clickedPlace = document.getElementsByClassName("ombrellone")[parseInt(this.place-1)];
                 clickedPlace.style.backgroundColor = "red";
-            }
+            },
         }
     };
 </script>
@@ -86,6 +107,22 @@
     input[type=text]:disabled{
         background-color: gainsboro;
     }
+
+    button {
+        border: none;
+        height: 30px;
+        background-color: #33A8CC;
+        border-radius: 5px;
+        color: white;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        margin: 0 auto;
+    }
+
 
     label{
         display: block;
@@ -115,9 +152,8 @@
          
     }
 
-    
     .user-info{
-        margin-bottom: 20px;
+        margin-bottom: 10px;
     }
 
     .user-info > label {

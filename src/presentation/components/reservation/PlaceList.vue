@@ -104,6 +104,13 @@
 <style scoped>
 @import '/src//authModals.css';
 
+input[type=text]{
+    height: 30px;
+    border-radius: 5px;
+    margin-bottom: 0px;
+    padding: 0 15px;
+}
+
 .placeList {
     position: relative;
     width: 334px;

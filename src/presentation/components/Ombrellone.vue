@@ -6,11 +6,12 @@
 export default {
   name: "Ombrellone",
   props: {
-    gridId: String
+    gridId : Map
   },
  
   computed: {
     computedGridId() {
+      console.log(this.gridId);
       return this.gridId;
     }
   },

@@ -189,7 +189,6 @@
                     // 35 dates is to get all full calendar pages, without it
                     // the number would be disaligned from the day name 
                     for (let j = 0; j < 35; j++) {
-                        
                         currentMonth.push(this.setCalendarDayStatus(150, statusDayCounter, currentDate));
                         currentDate.setDate(currentDate.getDate() + 1);
                         statusDayCounter++;

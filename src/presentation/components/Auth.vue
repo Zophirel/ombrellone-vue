@@ -95,7 +95,7 @@
 
     
     .user-info{
-        margin-bottom: 20px;
+        margin-bottom: 18px;
     }
 
     .user-info > label {
