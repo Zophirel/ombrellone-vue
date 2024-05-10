@@ -183,6 +183,7 @@
                 // Set the start date for the current year's May 27th
                 let startDate = new Date(`5-27-${new Date().getFullYear()}`);
                 let currentDate = startDate;
+                
                 // Create arrays for each month
                 let june = [], july = [], aug = [], sept = [];
                 
@@ -332,10 +333,6 @@
     .avaliable:hover, .almostFull:hover {
         cursor: pointer;
     }
-
-
-
-
 
     .full {
         background-color: #ff7065;
