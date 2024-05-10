@@ -3,23 +3,22 @@
   <div id="bookingPage">    
     <aside :class="{openCalendar: this.isCalendarOpen, closeCalendar: this.closeCalendarClick}" id="sea" > 
       <p :class="{hideText: isCalendarOpen}">Mare</p> 
-      <Calendar v-if="this.isCalendarAnimationFinished" :date="this.localDate.date ?? this.date" @toggleCalendar = "toggleCalendar"/>
     </aside>
     
-    <nav v-show="!this.isCalendarOpen">
-    <Calendar id="calendar" :date="this.localDate.date"/>
+    <nav>
+    <Calendar id="calendar" :date="this.localDate.date" @setDateForAvaliablePlace="setCalendarDate"/>
     
     </nav>
-    <div v-show="!this.isCalendarOpen" class="center-ctn">
+    <div class="center-ctn">
   
-      <div v-show="!this.isCalendarOpen" class="ombrelloni-ctn">
-        <Ombrellone :cellData="filteredbookingPerPlaceMap.get(getColumnId(n))" :cellId="getColumnId(n)" v-for="n in this.getGridDimension(this.numberOfUmbrella)[0]" @click="openModal()"/>
+      <div class="ombrelloni-ctn">
+        <Ombrellone :selectedPlace ="selectedPlace" :date="localDate.date ?? new Date(parseInt(router.params.date))" :cellData="filteredbookingPerPlaceMap.get(getColumnId(n))" :cellId="getColumnId(n)" v-for="n in this.getGridDimension(this.numberOfUmbrella)[0]" @click="handlePlaceClick(getColumnId(n))"/>
       </div>
   
       <div class="middle-line" v-if="this.numberOfUmbrella > 80"></div>
       
       <div class="ombrelloni-ctn" v-if="this.numberOfUmbrella > 80">
-        <Ombrellone :cellData="filteredbookingPerPlaceMap.get(getColumnId(n + 80))" :cellId="getColumnId(n + 80)" v-for="n in this.getGridDimension(this.numberOfUmbrella)[1]" @click="openModal()"/>
+        <Ombrellone :date="localDate.date ?? new Date(parseInt(router.params.date))" :cellData="filteredbookingPerPlaceMap.get(getColumnId(n + 80))" :cellId="getColumnId(n + 80)" v-for="n in this.getGridDimension(this.numberOfUmbrella)[1]" @click="handlePlaceClick(getColumnId(n + 80))"/>
       </div>
 
     </div>
@@ -81,6 +80,7 @@ export default {
       isCalendarOpen: false,
       isCalendarAnimationFinished: false,
       closeCalendarClick: false,
+      selectedPlace: null
     };
   },
 
@@ -139,12 +139,21 @@ export default {
           return [upRoundedNum, upRoundedNum];      
       }
     },
+    setCalendarDate(date) {
+        this.localDate.date = date;
+    },
+    handlePlaceClick(id){
+      this.selectedPlace = id;
+    }
   }
 };
 </script>
 
 <style scoped>
 
+
+
+  
 
   #bookingPage {
     height: 100%;
@@ -185,8 +194,7 @@ export default {
 
   #calendar{
     position: relative;
-    top: 20px
-
+    top: 20px;
   }
 
   #calendar > p{
@@ -240,53 +248,8 @@ export default {
     justify-content: center;
   }
 
-  /* Calendar animation */
-  .openCalendar {
-    animation: openCalendar 0.3s ease-in-out 0.2s  forwards;
-  }
-
-  .closeCalendar {
-    animation: closeCalendar 0.3s ease-out forwards;
-  }
-
   .contained {
     max-width: 100px;
   }
-
-  @keyframes openCalendar {
-    0% {
-      width: 10vw
-    }
-    100% {
-      width: 100vw;
-    }
-  }
-
-  @keyframes closeCalendar {
-    0% {
-      width: 100vw
-    }
-    100% {
-      width: 10vw;
-    }
-  }
-
-  .hideText {
-    animation: hideText 0.2s ease-out forwards;
-  }
-
-  .hiddenText {
-    display: none;
-  }
-
-  @keyframes hideText {
-    0% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 0;
-    }
-  }
-  
 
 </style>
