@@ -1,6 +1,7 @@
 <template>
     <div id="authModalCtn">
         <input
+            id="dateInput"
             :disabled="this.showCalendar" 
             :value="this.selectedDay != null ? this.selectedDay.toLocaleDateString() : ''" 
             type="text" 
@@ -56,7 +57,10 @@
     export default {
         name: 'Calendar',
         emits: ["setDateForAvaliablePlace", "resetDate"],
-        
+        props: {
+            date: Date
+        },
+
         setup(){
             const placeStore = usePlaceStore();
             return { placeStore }
@@ -74,8 +78,11 @@
         },
 
         async mounted() {
-            console.log("mounted");
+            
             await this.initCalendar();
+            if(this.date !== null){
+                this.selectedDay = this.date;
+            }
         },
 
         methods: {
@@ -249,6 +256,10 @@
         z-index: 1;
         position: relative;
         right: 65px;
+    }
+
+    #dateInput:disabled {
+        background-color: white;
     }
 
     #monthInput{
