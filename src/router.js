@@ -9,15 +9,13 @@ const routes = [
       meta: { transition: 'none' }
     },
 
-    { 
-      name: 'Booking', 
-      path: '/booking', 
+    {  
+      name: "Booking",
+      path: '/booking/:date', 
       component: BookingPage,  
-      props: {
-        date: new Date("6-28-24"), 
-        numberOfUmbrella: 150
-      },
+      props: { BookingPage: true, numberOfUmbrella: 150 },
       meta: { transition: 'booking-in-bottom' }
+      
     },  
 ]
 
