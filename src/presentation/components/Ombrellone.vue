@@ -1,5 +1,9 @@
 <template>
-  <div :data-custom="cellId" :class="{ombrellone: true, busy: cellData.reservations.length > 0, free: cellData.reservations.length > 0 == 0 }">{{ cellId }}</div>
+  <div :data-custom="cellId" :class="{
+    ombrellone: true, 
+    activePlace: selectedPlace === cellId,
+    busy: cellData.reservations.includes(date.toISOString()), 
+    free: !cellData.reservations.includes(date.toISOString()) }">{{ cellId }}</div>
 </template>
 
 <script>
@@ -7,6 +11,8 @@ export default {
   name: "Ombrellone",
   
   props: {
+    selectedPlace: String,
+    date: Date,
     cellId : String,
     cellData: Object
   },
@@ -29,6 +35,20 @@ export default {
 
   .free {
     background-color: #C0F54F;
+    cursor: pointer;
+    transition: all 0.3s ease-in;
+  }
+
+  .free:hover {
+    background-color: #C0F54F;
+    cursor: pointer;
+    border: 5px solid black;
+  }
+
+  .activeDaysNumber{
+    -webkit-box-shadow: inset 0px 0px 0px 3px #1d1c1c;
+    -moz-box-shadow: inset 0px 0px 0px 3px #1d1c1c;
+    box-shadow: inset 0px 0px 0px 3px #1d1c1c;
   }
 
   .busy {
