@@ -41,33 +41,27 @@
     import PlaceList from './PlaceList.vue';
     import { useRoute, useRouter } from 'vue-router'
 
+ 
+
+
     export default {
         name: 'ReservationModal',
         emits: ["closeModal"],
         props: {
             "fullName" : String,
         },
-
-        setup(){
-            
-            const router = useRouter();
-            const goToBooking = () => {
-                
-                router.push({
-                    name: "Booking",
-                });
-            };
-
-            return { goToBooking }
-
-        },
-
+        
         data(){
             return {
                 price : 10, 
                 chair: 1,
                 date : null
             }
+        },
+
+        setup(){
+            const router = useRouter();
+            return {router};
         },
 
         components: {
@@ -97,6 +91,15 @@
                 let clickedPlace = document.getElementsByClassName("ombrellone")[parseInt(this.place-1)];
                 clickedPlace.style.backgroundColor = "red";
             },
+
+            async goToBooking()  {   
+                console.log(this.date);
+                console.log(Math.floor(this.date.getTime() / 1000));
+                await this.router.push({
+                    name: "Booking",
+                    params: { date: `${ this.date.getTime() }`,  }
+                });
+            }
         }
     };
 </script>
