@@ -7,29 +7,19 @@
     </aside>
     
     <nav v-show="!this.isCalendarOpen">
-    
-      <div id="calendar" @click="toggleCalendar()">
-          <img src="../../assets/calendar.svg">
-          <p>{{ localDate.formatted }}</p>
-      </div>
-
-      <div id="profile">
-          <img src="../../assets/usericon.svg">
-      </div>
+    <Calendar id="calendar" :date="this.localDate.date"/>
     
     </nav>
-    
-  
     <div v-show="!this.isCalendarOpen" class="center-ctn">
   
       <div v-show="!this.isCalendarOpen" class="ombrelloni-ctn">
-        <Ombrellone :gridId="filteredbookingPerPlaceMap" v-for="n in this.getGridDimension(this.numberOfUmbrella)[0]" @click="openModal"/>
+        <Ombrellone :cellData="filteredbookingPerPlaceMap.get(getColumnId(n))" :cellId="getColumnId(n)" v-for="n in this.getGridDimension(this.numberOfUmbrella)[0]" @click="openModal()"/>
       </div>
   
       <div class="middle-line" v-if="this.numberOfUmbrella > 80"></div>
       
       <div class="ombrelloni-ctn" v-if="this.numberOfUmbrella > 80">
-        <Ombrellone :gridId="filteredbookingPerPlaceMap" v-for="n in this.getGridDimension(this.numberOfUmbrella)[1]" @click="openModal"/>
+        <Ombrellone :cellData="filteredbookingPerPlaceMap.get(getColumnId(n + 80))" :cellId="getColumnId(n + 80)" v-for="n in this.getGridDimension(this.numberOfUmbrella)[1]" @click="openModal()"/>
       </div>
 
     </div>
@@ -38,18 +28,19 @@
     
 <script>
 
-import Calendar from "./Calendar.vue";
+import Calendar from "./reservation/Calendar.vue";
 import Ombrellone from "./Ombrellone.vue";
 import { useUserStore } from '../../domain/user/userStore';
 import { usePlaceStore } from "../../domain/place/placeStore";
 import Place from "../../domain/place/place";
 import { toRaw } from "vue";
+import { useRoute } from "vue-router";
 export default {
   name: "BookingPage",
   emits: ["openModal", "toggleCalendar"],
 
   props: {
-    date: Date,
+    date: String,
     numberOfUmbrella: Number,
   },
 
@@ -65,18 +56,20 @@ export default {
       }
     });
 
-
     const filteredbookingPerPlaceMap = new Map();
     filteredbookingPerPlace.map((elem) => {
       filteredbookingPerPlaceMap.set(`${elem.index}${elem.row}`, {beachId: elem.beachId, reservations: elem.reservations});
     });
 
-    return {userStore, placeStore, filteredbookingPerPlaceMap};
+    const router = useRoute();
+    
+    return {userStore, placeStore, filteredbookingPerPlaceMap, router};
   },
 
   mounted() {
-    console.log("mounted");
-    this.setDate();
+    
+    this.localDate.date = new Date(parseInt(this.router.params.date)); 
+    console.log(this.localDate.date); 
     this.mounted = true;
 
   },
@@ -88,7 +81,6 @@ export default {
       isCalendarOpen: false,
       isCalendarAnimationFinished: false,
       closeCalendarClick: false,
-  
     };
   },
 
@@ -98,54 +90,21 @@ export default {
   },
 
   methods: {
-    toggleCalendar(date){
-
-      if(!this.isCalendarOpen){
-        this.closeCalendarClick = false;
-        this.isCalendarOpen = true;
-        this.isCalendarAnimationFinished = false
-        setTimeout(() => {
-          this.isCalendarAnimationFinished = true;
-        }, 600);
-      } else {
-        console.log("close calendar");
-        this.closeCalendarClick = true;
-        setTimeout(() => {
-          this.isCalendarOpen = false;
-          this.setDate(date)
-        }, 300);
-        
+    getColumnId(index) {
+      let columnIndex = Math.floor(index / 11) + 1;
+      if(index > 80){
+        columnIndex += 1;
       }
-    },
-
-    openModal(event) {
-      console.log("parent received click");
-      this.$emit("openModal", event.target);
-    },
-
-    swapDate(){
-      if (this.localDate.formatted !== null) {
-        let splittedDate = this.localDate.formatted.split('/');
-        let day = splittedDate[0];
-        splittedDate[0] = splittedDate[1];
-        splittedDate[1] = day;
-        return splittedDate.join('/');
+      
+      let rowIndex = index % 10; 
+      if(rowIndex === 0){
+        rowIndex = 10;
       }
     
-    },
+      const rowLetter = String.fromCharCode("A".charCodeAt(0) + rowIndex - 1 ); // Adjust row letter calculation
 
-    setDate(date) {
-      if (this.localDate.formatted === null && this.localDate.date === null) {
-        this.localDate.formatted = this.date.toLocaleDateString("it-IT");
-        this.localDate.date = new Date(Date.parse(this.swapDate()));
-      } 
-      
-      else if( date !== undefined ){
-        this.localDate.formatted = date.toLocaleDateString("it-IT");
-        this.localDate.date = new Date(Date.parse(this.swapDate()));
-      }
+      return `${columnIndex}${rowLetter}`;
     },
-
     // get the umbrella grids dimension
     getGridDimension(number){
       
@@ -225,14 +184,8 @@ export default {
   }
 
   #calendar{
-    display: flex;
-    margin: 10px;
-    max-width: 250px;
-    width: 40vw;
-    background-color: aliceblue;
-    border-radius: 3px;
-    justify-content: space-around;
-    align-items: center;
+    position: relative;
+    top: 20px
 
   }
 
@@ -274,7 +227,8 @@ export default {
     grid-template-columns: repeat(10, 4vw);
     justify-content: center;
     align-content: center;
-    gap: 4vmin;
+    row-gap: 2vmin;
+    column-gap: 4.6vmin;
     margin: 20px 0;
     width: calc(100vw - 50px);
   }
