@@ -18,7 +18,7 @@ export const UserDatasource = {
 
     login: async ( userData ) => {
  
-        let isInit = await initServerSession();
+        let isInit = await UserDatasource.initServerSession();
         if(isInit){
             const jsonData = { 
                 email: userData.email, 
@@ -31,7 +31,7 @@ export const UserDatasource = {
             
             } catch (err) {
                 console.error('Error during POST request: ', err);
-                return err;
+                throw err;
             }
         }
     },
@@ -39,7 +39,7 @@ export const UserDatasource = {
 
     signup: async ( userData ) => {
        
-        let isInit = await initServerSession();
+        let isInit = await UserDatasource.initServerSession();
         if(isInit){
             const jsonData = {
                 name: userData.name,  
