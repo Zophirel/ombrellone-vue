@@ -1,9 +1,8 @@
 <template> 
 
-  <div class="home-page-ctn"  @wheel="$emit('handleMouseWheel')"  @touchmove="$emit('handleTouchMove')" >
-    <Calendar v-if="showLoginModal && !userStore.isUserLogged"/>
-    <!-- <AuthModal v-if="showLoginModal && !userStore.isUserLogged"/> -->
-    <ReservationModal v-if="showReservationModal" :fullName="`Aziz Brazorf`"/>
+  <div class="home-page-ctn" @wheel="$emit('handleMouseWheel')"  @touchmove="$emit('handleTouchMove')" >
+    <AuthModal v-if="showLoginModal && !userStore.isUserLogged"/>
+    <!-- <ReservationModal v-if="showReservationModal" :fullName="`Aziz Brazorf`"/> -->
     <h1>PRENOTA<br/>IL TUO<br/>POSTO</h1>
     <img src="../../assets/chair.png" alt="">
     <!-- <div id="button"><img src="../assets/arrow_down.svg"></div>-->
@@ -38,7 +37,7 @@
     components: {
       AuthModal,
       ReservationModal,
-      Calendar
+      Calendar,
     },
     
   }
@@ -105,6 +104,7 @@
   }
 
   .home-page-ctn {
+    background-color: #FFB342;
     display: grid; 
     grid-template-areas: "htext img"
                          "button button";
@@ -112,7 +112,7 @@
     justify-content: center;
     align-items: center;
     height: 100%;
-    width: 99%;
+    width: 100%;
    
   }
 
