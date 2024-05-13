@@ -81,6 +81,7 @@
     background-color: white;  
     border-radius: 5px;
     max-width: 80vw;
+    align-self: center;
   }
   
   label {
@@ -120,7 +121,6 @@
     align-items: center;
     justify-content: center;
     z-index: 2;
-    padding: 10px 0;
     height: 100vh;
   }
 
