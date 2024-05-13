@@ -1,19 +1,44 @@
 <template>
-  <div :data-custom="cellId" :class="{
+  <div :data-custom="cellId" 
+  :class="{
     ombrellone: true, 
-    activePlace: selectedPlace === cellId,
+    activePlace: getSelectedPlace === cellId && !cellData.reservations.includes(date.toISOString()),
     busy: cellData.reservations.includes(date.toISOString()), 
-    free: !cellData.reservations.includes(date.toISOString()) }">{{ cellId }}</div>
+    free: !cellData.reservations.includes(date.toISOString())}"
+    @click="goToHome()"
+    >
+      {{ cellId }}
+    </div>
 </template>
 
 <script>
+
+import { useRouter } from 'vue-router';
+
 export default {
   name: "Ombrellone",
   
+  setup(){
+      const router = useRouter();
+      return {router};
+  },
+
+  methods: {
+    async goToHome(){
+      await this.router.push({ name: "HomeAnimation"});
+    }
+  },
+
+  computed: {
+    getSelectedPlace(){
+      return this.selectedPlace
+    }
+  },
+
   props: {
     selectedPlace: String,
     date: Date,
-    cellId : String,
+    cellId: String,
     cellData: Object
   },
 };
@@ -39,13 +64,8 @@ export default {
     transition: all 0.3s ease-in;
   }
 
-  .free:hover {
-    background-color: #C0F54F;
-    cursor: pointer;
-    border: 5px solid black;
-  }
 
-  .activeDaysNumber{
+  .activePlace {
     -webkit-box-shadow: inset 0px 0px 0px 3px #1d1c1c;
     -moz-box-shadow: inset 0px 0px 0px 3px #1d1c1c;
     box-shadow: inset 0px 0px 0px 3px #1d1c1c;

@@ -12,13 +12,24 @@
     <div class="center-ctn">
   
       <div class="ombrelloni-ctn">
-        <Ombrellone :selectedPlace ="selectedPlace" :date="localDate.date ?? new Date(parseInt(router.params.date))" :cellData="filteredbookingPerPlaceMap.get(getColumnId(n))" :cellId="getColumnId(n)" v-for="n in this.getGridDimension(this.numberOfUmbrella)[0]" @click="handlePlaceClick(getColumnId(n))"/>
+        <Ombrellone 
+          :selectedPlace ="selectedPlace" 
+          :date="localDate.date ?? new Date(parseInt(router.params.date))" 
+          :cellData="filteredbookingPerPlaceMap.get(placeIds[index])" 
+          :cellId="placeIds[index]" v-for="(n, index) in this.getGridDimension(this.numberOfUmbrella)[0]" 
+          @click="selectedPlace = placeIds[index]"/>
       </div>
   
       <div class="middle-line" v-if="this.numberOfUmbrella > 80"></div>
       
       <div class="ombrelloni-ctn" v-if="this.numberOfUmbrella > 80">
-        <Ombrellone :date="localDate.date ?? new Date(parseInt(router.params.date))" :cellData="filteredbookingPerPlaceMap.get(getColumnId(n + 80))" :cellId="getColumnId(n + 80)" v-for="n in this.getGridDimension(this.numberOfUmbrella)[1]" @click="handlePlaceClick(getColumnId(n + 80))"/>
+        <Ombrellone
+          :selectedPlace ="selectedPlace" 
+          :date="localDate.date ?? new Date(parseInt(router.params.date))" 
+          :cellData="filteredbookingPerPlaceMap.get(placeIds[index + 80])" 
+          :cellId="placeIds[index + 80]" v-for="(n, index) in this.getGridDimension(this.numberOfUmbrella)[1]" 
+          @click="selectedPlace =placeIds[index + 80]"/>
+
       </div>
 
     </div>
@@ -46,7 +57,8 @@ export default {
   setup(){
     const userStore = useUserStore();
     const placeStore = usePlaceStore();
-   
+    const router = useRoute();
+
     let bookingPerPlace = placeStore.getBookingPerPlace;
      
     let filteredbookingPerPlace = bookingPerPlace.filter((elem) => {
@@ -59,14 +71,23 @@ export default {
     filteredbookingPerPlace.map((elem) => {
       filteredbookingPerPlaceMap.set(`${elem.index}${elem.row}`, {beachId: elem.beachId, reservations: elem.reservations});
     });
+  
+    let placeIds = [];
 
-    const router = useRoute();
+    function module(n){
+      return n % 15;
+    } 
+
+    for(let i = 0; i < 15; i++){
+      for(let j = 0; j < 10; j++){
+        placeIds.push(`${module(i) + 1}${String.fromCharCode("A".charCodeAt(0) + module(j))}`);
+      }
+    }
     
-    return {userStore, placeStore, filteredbookingPerPlaceMap, router};
+    return {userStore, placeStore, filteredbookingPerPlaceMap, router, placeIds};
   },
 
   mounted() {
-    
     this.localDate.date = new Date(parseInt(this.router.params.date)); 
     console.log(this.localDate.date); 
     this.mounted = true;
