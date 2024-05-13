@@ -117,7 +117,7 @@ export default {
 }
 
 html {
-  background-color: #FFB342;
+
   height: 100vh;
 }
 
@@ -140,13 +140,57 @@ body {
     opacity: 1;
   }
 }
-
-.booking-in-bottom-enter-active {
+ 
+.home-in-bottom-enter-active, .booking-in-bottom-enter-active {
   animation: moveInBottom 0.4s ease-out;
 }
 
-.booking-in-bottom-leave-active {
+.home-in-bottom-leave-active, .booking-in-bottom-leave-active {
   display: none;
 }
+
+@keyframes moveInTop {
+  0% {
+    transform: translateY(100px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0px);
+    opacity: 1;
+  }
+}
+ 
+.home-in-top-enter-active {
+  overflow: hidden;
+  display: none;
+  animation: moveInTop 0.4s ease-out;
+}
+
+.home-in-top-leave-active {
+  display: none;
+}
+
+
+@keyframes moveInRight {
+  0% {
+    transform: translateX(100px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0px);
+    opacity: 1;
+  }
+}
+
+
+.logged-in-right-enter-active {
+  animation: moveInRight 0.4s ease-out;
+}
+
+.logged-in-right-leave-active {
+  display: none;
+}
+
+
 
 </style>
