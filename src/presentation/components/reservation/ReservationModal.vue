@@ -39,7 +39,7 @@
     import SeatCounter from '../SeatCounter.vue';    
     import Calendar from './Calendar.vue';
     import PlaceList from './PlaceList.vue';
-    import { useRoute, useRouter } from 'vue-router'
+    import { useRouter } from 'vue-router'
 
  
 
