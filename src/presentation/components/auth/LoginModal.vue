@@ -32,6 +32,9 @@ import { ref } from 'vue';
 import ResponseNotification from './ResponseNotification.vue'
 import { usePlaceStore } from '../../../domain/place/placeStore';
 import { PlaceRepository } from '../../../data/repository/place';
+import { AxiosError } from 'axios';
+import router from '../../../router';
+import { useRouter } from 'vue-router';
 
 
 export default {
@@ -42,7 +45,8 @@ export default {
         const placeStore = usePlaceStore();
         const email = ref('');
         const password = ref('');
-        return { email, password, userStore, placeStore };
+        const router = useRouter();
+        return { email, password, userStore, placeStore, router };
     },
 
     data(){
@@ -119,6 +123,7 @@ export default {
    
 
                 this.toggleMessage();
+                await this.router.push({name: "LoggedIn"});
             } 
             
             else if(user instanceof AxiosError) {
