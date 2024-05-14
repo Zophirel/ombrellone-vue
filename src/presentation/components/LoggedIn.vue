@@ -44,7 +44,19 @@
         gap: 15px;
         flex-direction: row;
         padding: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        background-color: rgb(160, 160, 160);
+        transition: all 0.4s;
     }
 
+    .tile > p {
+        align-self: center;
+        margin: 0;
+    }
+
+    .tile:hover{
+        background-color: cadetblue ;
+    }  
 </style>
   
