@@ -1,7 +1,7 @@
 
 
 <template>
-    <div id="authModalCtn">
+    <div id="authModalCtn" class="blurBg">
         <div id="authModal">
           <LoginModal v-if="isLoginState" @setState = "setState"/>
           <SignupModal v-if="isSignUpState" @setState = "setState"/>          
@@ -26,7 +26,7 @@
             isLostPasswordState: false,
             messageArrived: false,
             messageType: "",
-            resultDescription: ""
+            resultDescription: "",
           }
         },
 
@@ -122,6 +122,16 @@
     justify-content: center;
     z-index: 2;
     height: 100vh;
+  }
+
+  @keyframes blurBgAnimation {
+    0% {
+      backdrop-filter: blur(0);
+    }
+
+    100% {
+      backdrop-filter: blur(5px);
+    }
   }
 
   @media screen and (max-height: 700px ) {

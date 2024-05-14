@@ -3,10 +3,9 @@
   <div class="home-page-ctn" @wheel="$emit('handleMouseWheel')"  @touchmove="$emit('handleTouchMove')" >
     <AuthModal v-if="showLoginModal && !userStore.isUserLogged"/>
     <!-- <ReservationModal v-if="showReservationModal" :fullName="`Aziz Brazorf`"/> -->
-    <h1>PRENOTA<br/>IL TUO<br/>POSTO</h1>
-    <img src="../../assets/chair.png" alt="">
+    <h1>PRONTO PER LA TUA PAUSA AL MARE?</h1>
     <!-- <div id="button"><img src="../assets/arrow_down.svg"></div>-->
-    <div id="button"  @click="$emit('handleMouseWheelEvent')"><p> {{userStore.isUserLogged ? 'Prenota' : 'Accedi / Registrati'}}</p></div>
+    <div id="button"  @click="$emit('handleMouseWheelEvent')"><p> Prenota </p></div>
   </div>
 </template>
 
@@ -50,13 +49,13 @@
     grid-area: button;
     display: flex;
     margin: 0 auto;
-    padding: 10px;
-    border-radius: 50px;
+    padding: 10px 20px;
+    border-radius: 5px;
     justify-content: center;
     align-items: center;
-    border: 2px solid;
-    background-color: #fff7eb;
+    background-color: #FDD85D;
   }
+  
   #button > p {
     margin: 0;
     font-weight: bold;
@@ -86,14 +85,15 @@
  
   h1{
     grid-area: htext;
-    text-align: start;
+    text-align: center;
     font-size: 100px;
     font-weight: 900;
-    -webkit-text-stroke: 2px black;
+    -webkit-text-stroke: 3px black;
     font-family: 'Inter', sans-serif;
     color: rgba(0, 0, 0, 0);
     line-height: 80px;
     margin-bottom: 10px;
+    max-width: 1024px;
   }
   
   .home-page-ctn > img {
@@ -104,24 +104,31 @@
   }
 
   .home-page-ctn {
-    background-color: #FFB342;
-    display: grid; 
-    grid-template-areas: "htext img"
-                         "button button";
-    flex-direction: row;
+    background-image: url('/src/assets/app_bg.jpg');
+    background-position: center;
+    display: flex;
+    gap: 100px;
+    flex-direction: column;
+    background-size: cover;
     justify-content: center;
     align-items: center;
     height: 100%;
     width: 100%;
-   
+    transform: scale(1.1);
+    transition: all 0.3s;
+  }
+
+  .blurredBg {
+    filter: blur(2px);
   }
 
   @media screen and (max-width: 500px) {
     h1{
-      text-align: start;
+      text-align: center;
       font-size: 17vw;
       line-height: 16vw;
       width: 88vw;
+      margin: 0;
     }
 
     .home-page-ctn > img {
