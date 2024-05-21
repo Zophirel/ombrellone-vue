@@ -5,7 +5,7 @@
     activePlace: getSelectedPlace === cellId && !cellData.reservations.includes(date.toISOString()),
     busy: cellData.reservations.includes(date.toISOString()), 
     free: !cellData.reservations.includes(date.toISOString())}"
-    @click="goToHome()"
+    @click="continueBooking()"
     >
       {{ cellId }}
     </div>
@@ -20,12 +20,24 @@ export default {
   
   setup(){
       const router = useRouter();
-      return {router};
+      return { router };
   },
 
   methods: {
-    async goToHome(){
-      await this.router.push({ name: "HomeAnimation"});
+    async continueBooking(){
+      if(!this.cellData.reservations.includes(this.date.toISOString())){
+        this.router.back();
+        await this.router.replace(
+        { 
+          name: "LoggedInData", 
+          params: {
+
+            optionProp: `${true}`,
+            dateProp: `${this.date.getTime()}`,
+            placeProp: this.cellId
+          } 
+        });
+      }
     }
   },
 
