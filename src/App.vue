@@ -58,7 +58,8 @@ export default {
       isCalendarVisible : false,
       isModalVisible: false,
       clickedPlace: "",
-      showLoginModal: false
+      showLoginModal: false,
+      isOverflowHidden: false
     };
   },
 
@@ -104,6 +105,7 @@ export default {
     
   },
 }
+
 </script>
 
 <style>
@@ -114,6 +116,10 @@ export default {
   text-align: center;
   color: #2c3e50;
   height: 100%;
+}
+
+#app:has(> .logged-in-right-enter-active) { 
+  overflow: hidden; 
 }
 
 html {
@@ -174,11 +180,11 @@ body {
 @keyframes moveInRight {
   0% {
     transform: translateX(100px);
-    opacity: 0;
+
   }
   100% {
     transform: translateX(0px);
-    opacity: 1;
+
   }
 }
 
