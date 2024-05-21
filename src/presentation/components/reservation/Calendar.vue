@@ -2,49 +2,50 @@
     <div id="authModalCtn">
         <input
             id="dateInput"
-            :disabled="this.showCalendar" 
-            :value="this.selectedDay != null ? this.selectedDay.toLocaleDateString() : ''" 
+            :class="{ 'warn' : warn.msg !== '' }"
+            :disabled="showCalendar" 
+            :value="getDate" 
             type="text" 
             @click="openCalendar()" 
             placeholder="GG/MM/YYYY"
         >
-        <Transition name="calendar" > 
+        <p id="warnText" v-show="warn.msg != '' ">{{ warn.msg }}</p>
+        <Transition name="calendar"> 
             <div class="calendarWrapper">
-        <div class="calendar" v-show="showCalendar">
-            <div id="monthInput"> 
-                <button  @click="getPreviousMonth()">
-                    <span id="lbtn"><</span>    
-                </button>
-                <h3> {{ selectedMonthName }} </h3>
-                <button  @click="getNextMonth()">
-                    <span id="rbtn">></span>    
-                </button>
+                <div class="calendar" v-show="showCalendar">
+                    <div id="monthInput"> 
+                        <button  @click="getPreviousMonth()">
+                            <span id="lbtn"><</span>    
+                        </button>
+                        <h3> {{ selectedMonthName }} </h3>
+                        <button  @click="getNextMonth()">
+                            <span id="rbtn">></span>    
+                        </button>
+                    </div>
+                    <Transition name="numbers" > 
+                        <div class="week-grid" v-show="showCalendar">
+                            <p class="daysName">Lun</p>
+                            <p class="daysName">Mar</p>
+                            <p class="daysName">Mer</p>
+                            <p class="daysName">Gio</p>
+                            <p class="daysName">Ven</p>
+                            <p class="daysName">Sab</p>
+                            <p class="daysName">Dom</p>
+                            <div v-for="day in selectedMonth" :class="{
+                                    daysNumber: true, 
+                                    activeDaysNumber: selectedDay === day.date, 
+                                    avaliable: day.status === 'avaliable',
+                                    almostFull: day.status === 'almostFull',
+                                    full: day.status === 'full',
+                                    notAvaliable : day.status === 'notAvaliable'
+                                }" @click="handleDayClick(day)"> 
+                                <p> {{ day.date.getDate() }}</p>
+                            </div> 
+                        </div>
+                    </Transition> 
+                </div>
             </div>
-            <Transition name="numbers" > 
-            <div class="week-grid" v-show="showCalendar">
-                <p class="daysName">Lun</p>
-                <p class="daysName">Mar</p>
-                <p class="daysName">Mer</p>
-                <p class="daysName">Gio</p>
-                <p class="daysName">Ven</p>
-                <p class="daysName">Sab</p>
-                <p class="daysName">Dom</p>
-                <div v-for="day in selectedMonth" :class="{
-                        daysNumber: true, 
-                        activeDaysNumber: selectedDay === day.date, 
-                        avaliable: day.status === 'avaliable',
-                        almostFull: day.status === 'almostFull',
-                        full: day.status === 'full',
-                        notAvaliable : day.status === 'notAvaliable'
-                    }" @click="handleDayClick(day)"> 
-                    <p> {{ day.date.getDate() }}</p>
-                </div> 
-            </div>
-        
-        </Transition> 
-        </div>
-    </div>
-    </Transition>
+        </Transition>
     </div>
 </template>
     
@@ -53,17 +54,32 @@
 
     import { usePlaceStore } from '../../../domain/place/placeStore';
     import { PlaceRepository } from '../../../data/repository/place';
-
+    
     export default {
         name: 'Calendar',
-        emits: ["setDateForAvaliablePlace", "resetDate"],
+        emits: ["setDateForAvaliablePlace", "resetDate", "resetWarn"],
         props: {
-            date: Date
+            date: Date,
+            warn: Object
         },
 
         setup(){
             const placeStore = usePlaceStore();
             return { placeStore }
+        },
+
+        computed: {
+            getDate(){
+                if(this.date === null && this.selectedDay !== null){
+                    return this.selectedDay;
+                } else if(this.date !== null && this.selectedDay === null){
+                    return this.date.toLocaleDateString();
+                } else if(this.date !== null && this.selectedDay !== null){
+                    return this.selectedDay;
+                } else {
+                    return '';
+                }
+            }
         },
 
         data(){
@@ -73,26 +89,22 @@
                 selectedMonth: [],
                 selectedMonthName: "",
                 selectedDay: null,
-            
             }
         },
 
         async mounted() {
-            
-            await this.initCalendar();
+            console.log("calendar mounted");
             if(this.date !== null){
-                this.selectedDay = this.date;
+                this.selectedDay = this.date.toLocaleDateString();
             }
+            this.initCalendar()
         },
 
         methods: {
             getNextMonth() {                       
                 if(this.workingMonths[0] === this.selectedMonth){
-
-                    this.selectedMonthName = "Luglio"
+                    this.selectedMonthName = "Luglio";
                     this.selectedMonth = this.workingMonths[1];
-                 
-                
                 } else if(this.workingMonths[1] === this.selectedMonth){
                     this.selectedMonthName = "Agosto"
                     this.selectedMonth = this.workingMonths[2];
@@ -130,15 +142,17 @@
             },
 
             handleDayClick(dayaData) {
+
+                this.$emit("resetWarn");
                 if (this.selectedDay !== dayaData.date) {
               
-                    this.selectedDay = dayaData.date;
+                    this.selectedDay = dayaData.date.toLocaleDateString();
                    
                     this.$emit("setDateForAvaliablePlace", dayaData.date);
                     
                     setTimeout(() => {
                         this.showCalendar = false;    
-                    }, 400);
+                    }, 200);
                     
                 } else {
                     this.selectedDay = null;
@@ -147,13 +161,20 @@
 
 
             setCalendarDayStatus(totalPlaces, i, date){
+                console.log("Set Calendar Days Status")
+                let numberOfBookings = 0; 
+                if(this.placeStore.getBookingPerPlace[i].reservations){
+                    numberOfBookings = this.placeStore.getBookingPerPlace[i].reservations.length 
+                }
+                
+                
                 if(date.getMonth() + 1 > 5 && date.getMonth() + 1 < 10 ){
-                    if(this.placeStore.getBookingRatio[i] < 0.5 * totalPlaces){
+                    if(numberOfBookings <= 0.5 * totalPlaces){
                         return {
                             date: new Date(date),
                             status: "avaliable"
                         }
-                    } else if (this.placeStore.getBookingRatio[i] > 0.5 * totalPlaces){
+                    } else if (numberOfBookings > 0.5 * totalPlaces){
                         return {
                             date: new Date(date),
                             status: "almostFull"
@@ -303,6 +324,19 @@
     }
     h3{
         margin: 0;
+    }
+
+    #dateInput.warn {
+        border: 2px solid red;
+    }
+
+    #warnText {
+        text-align: start;
+        margin: 0;
+        position: relative;
+        bottom: 6px;
+        font-size: 14px;
+        color: red;
     }
 
     .week-grid{
