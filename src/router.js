@@ -21,15 +21,23 @@ const routes = [
       name: "Booking",
       path: '/booking/:date', 
       component: BookingPage,  
-      props: { BookingPage: true, numberOfUmbrella: 150 },
+      props: { BookingPage: true, numberOfUmbrella: 150, warn: {msg: ""} },
       meta: { transition: 'booking-in-bottom' }
     },
 
     {  
-      name: "LoggedIn",
+      name: "LoggedInDefault",
       path: '/logged', 
       component: LoggedIn,  
       meta: { transition: 'logged-in-right' }
+    },
+
+    {  
+      name: "LoggedInData",
+      path: '/logged/:dateProp/:optionProp/:placeProp', 
+      component: LoggedIn,
+      props: true,  
+      meta: { transition: 'home-in-top' }
     },
 
 ]
