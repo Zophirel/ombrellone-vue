@@ -1,11 +1,17 @@
 import { defineStore } from 'pinia'
 
 export const usePlaceStore = defineStore('place', {
-    state: () => ({ listOfBookingRatio: [], bookinPerPlace: [] }),
+    state: () => ({ 
+      listOfBookingRatio: [], 
+      bookinPerPlace: [], 
+      bookedPlace: [],
+      userBooking: null
+    }),
 
     getters: {
       getBookingRatio: (state) => state.listOfBookingRatio,
-      getBookingPerPlace: (state) => state.bookinPerPlace
+      getBookingPerPlace: (state) => state.bookinPerPlace,
+      getUserBooking: (state) => state.userBooking
     },
 
     actions: {
@@ -15,6 +21,10 @@ export const usePlaceStore = defineStore('place', {
 
       setBookingPerPlaceList(list){
         this.bookinPerPlace = list;
+      },
+
+      setUserBooking(list){
+        this.userBooking = list;
       }
     },
     //persist: true,
