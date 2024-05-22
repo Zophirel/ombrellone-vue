@@ -36,17 +36,13 @@ export default {
     const router = useRouter();
     const route = useRoute();
     const userStore = useUserStore();
-
-    const goToBooking = () => {
-      router.push({
-        name: "Booking",
-      });
-    };
-
+    
+    if(userStore.isLogin){
+      router.push({name: "LoggedInDefault"})
+    }
 
     return {
       route,
-      goToBooking,
       userStore,  
     }
   },
@@ -123,7 +119,7 @@ export default {
 }
 
 html {
-
+  font-family: 'Roboto', sans-serif;
   height: 100vh;
 }
 
