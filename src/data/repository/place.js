@@ -1,5 +1,8 @@
 import { PlaceDatasource } from "../datasources/place";
 import Place from "../../domain/place/place"
+import { usePlaceStore } from "../../domain/place/placeStore";
+import { useUserStore } from "../../domain/user/userStore";
+import { AxiosError } from "axios";
 
 export const PlaceRepository = {
     getBookedRatios: async () => {
@@ -31,4 +34,42 @@ export const PlaceRepository = {
             return err;
         } 
     },
+
+    saveReservationInLocalStore: (date, place) =>{     
+        let index = parseInt(place.charAt(0));
+        let row = place.charAt(1);
+        const placeStore = usePlaceStore();
+        
+        placeStore.getBookingPerPlace.filter((elem) => {
+            if(elem.index){
+                if(elem.index === index && elem.row === row){
+                    elem.reservations.push(date.toISOString()); 
+                    return true;
+                }
+            }
+        });
+    },
+
+
+    makeReservarions: async (date, place, chair) => {
+        let booking = await PlaceDatasource.bookPlace(date, place, chair);
+        
+        console.log(booking);
+        if(booking instanceof AxiosError ){            
+            if(booking.response.status === 403){
+                const userStore = useUserStore();
+                userStore.logOutUser();
+                return booking;
+            }
+        }else if(booking.status === 200) {
+            PlaceRepository.saveReservationInLocalStore(date, place);
+            
+            return true;
+        }   
+    },
+
+    getUserBookings: async () => {
+        let bookings = await PlaceDatasource.getUserBookings();
+        return bookings.data;
+    }
 }
