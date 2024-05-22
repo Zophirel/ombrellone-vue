@@ -135,9 +135,9 @@
         width: 100%;
         height: 50px;
         margin-top: 40px;
-        background-color: #33A8CC;
+        background-color: #FDD85D;
         border: 0;
-        color: white;
+        color: #272525;
         font-weight: 300;
         font-size: 18px;
     }
