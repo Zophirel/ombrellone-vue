@@ -218,9 +218,9 @@
     button {
         border: none;
         height: 30px;
-        background-color: #33A8CC;
+        background-color: #FDD85D;
         border-radius: 5px;
-        color: white;
+        color: #272525;
         font-size: 14px;
         cursor: pointer;
         display: flex;
@@ -228,6 +228,8 @@
         align-items: center;
         gap: 10px;
         margin: 0 auto;
+        font-family: 'Roboto';
+        font-weight: 500;
         padding: 10px;
     }
 
