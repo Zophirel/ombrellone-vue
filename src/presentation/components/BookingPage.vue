@@ -6,7 +6,7 @@
     </aside>
     
     <nav>
-    <Calendar id="calendar" :date="this.localDate.date" @setDateForAvaliablePlace="setCalendarDate"/>
+    <Calendar :warn="{msg:''}" id="calendar" :date="this.localDate.date" @setDateForAvaliablePlace="setCalendarDate"/>
     
     </nav>
     <div class="center-ctn">
@@ -40,7 +40,6 @@
 
 import Calendar from "./reservation/Calendar.vue";
 import Ombrellone from "./Ombrellone.vue";
-import { useUserStore } from '../../domain/user/userStore';
 import { usePlaceStore } from "../../domain/place/placeStore";
 import Place from "../../domain/place/place";
 import { toRaw } from "vue";
@@ -55,7 +54,6 @@ export default {
   },
 
   setup(){
-    const userStore = useUserStore();
     const placeStore = usePlaceStore();
     const router = useRoute();
 
@@ -84,14 +82,12 @@ export default {
       }
     }
     
-    return {userStore, placeStore, filteredbookingPerPlaceMap, router, placeIds};
+    return { placeStore, filteredbookingPerPlaceMap, router, placeIds };
   },
 
   mounted() {
     this.localDate.date = new Date(parseInt(this.router.params.date)); 
-    console.log(this.localDate.date); 
     this.mounted = true;
-
   },
 
   data() {
@@ -172,14 +168,11 @@ export default {
 
 <style scoped>
 
-
-
-  
-
   #bookingPage {
     height: 100%;
     display: flex;
     flex-direction: column;
+    background-color: #6798C0;
   }
 
   #sea {
