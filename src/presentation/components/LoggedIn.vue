@@ -6,7 +6,7 @@
                     <img class="icon" src="/src/assets/book.svg"/>
                     <p>Nuova prenotazione</p>
                 </div>
-                <div class="tile">
+                <div class="tile" @click="isBookedModalOpen = true">
                     <img class="icon" src="/src/assets/booked.svg"/>
                     <p>Prenotazioni effettuate</p>
                 </div>
@@ -21,12 +21,14 @@
                 v-if="isReservationModalOpen && dateProp !== null"
                 @toggleReservationModal = "toggleReservationModal"
             />
+            <BookedModal v-if="isBookedModalOpen"/>
         </div>
     </div>
 </template>
 
 <script>
     import ReservationModal from './reservation/ReservationModal.vue';
+    import BookedModal from './BookedModal.vue';
     import { useUserStore } from '../../domain/user/userStore';
 
     export default {
@@ -51,7 +53,9 @@
            return { 
             optionSelected: null,
             date: null,
-            isReservationModalOpen: false
+            isReservationModalOpen: false,
+            isBookedModalOpen: false
+
         }
         },
 
@@ -68,7 +72,8 @@
             }
         }, 
         components: {
-            ReservationModal
+            ReservationModal,
+            BookedModal
         }
     }
 </script>
