@@ -2,10 +2,8 @@
 
   <div class="home-page-ctn" @wheel="$emit('handleMouseWheel')"  @touchmove="$emit('handleTouchMove')" >
     <AuthModal v-if="showLoginModal && !userStore.isUserLogged"/>
-    <!-- <ReservationModal v-if="showReservationModal" :fullName="`Aziz Brazorf`"/> -->
     <h1>PRONTO PER LA TUA PAUSA AL MARE?</h1>
-    <!-- <div id="button"><img src="../assets/arrow_down.svg"></div>-->
-    <div id="button"  @click="$emit('handleMouseWheelEvent')"><p> Prenota </p></div>
+    <div id="button" @click="$emit('handleMouseWheel')"><p> Prenota </p></div>
   </div>
 </template>
 
@@ -15,6 +13,7 @@
   import Calendar from "./reservation/Calendar.vue";
   import { useUserStore } from '../../domain/user/userStore';
   import ReservationModal from "./reservation/ReservationModal.vue";
+  import { useRouter } from "vue-router";
 
   export default {
     name: 'HomePage',
@@ -46,7 +45,6 @@
 <style scoped>
 
   #button {
-    grid-area: button;
     display: flex;
     margin: 0 auto;
     padding: 10px 20px;
@@ -84,13 +82,12 @@
   }
  
   h1{
-    grid-area: htext;
     text-align: center;
     font-size: 100px;
     font-weight: 900;
     -webkit-text-stroke: 3px black;
-    font-family: 'Inter', sans-serif;
-    color: rgba(0, 0, 0, 0);
+    font-family: sans-serif;
+    color: #ffffff1a;
     line-height: 80px;
     margin-bottom: 10px;
     max-width: 1024px;
@@ -114,12 +111,7 @@
     align-items: center;
     height: 100%;
     width: 100%;
-    transform: scale(1.1);
     transition: all 0.3s;
-  }
-
-  .blurredBg {
-    filter: blur(2px);
   }
 
   @media screen and (max-width: 500px) {
