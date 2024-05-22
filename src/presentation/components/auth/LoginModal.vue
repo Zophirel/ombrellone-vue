@@ -120,10 +120,10 @@ export default {
                 
                 this.messageType = "success";
                 this.resultDescription = "Login effettuato!";
-   
-
                 this.toggleMessage();
-                await this.router.push({name: "LoggedIn"});
+                
+                await this.router.replace({name: "LoggedInDefault"} );
+         
             } 
             
             else if(user instanceof AxiosError) {
