@@ -1,7 +1,7 @@
 
 
 <template>
-    <div id="authModalCtn" class="blurBg">
+    <div id="authModalCtn" :class="{ blurBg: isBlurred, notBlurBg: !isBlurred } ">
         <div id="authModal">
           <LoginModal v-if="isLoginState" @setState = "setState"/>
           <SignupModal v-if="isSignUpState" @setState = "setState"/>          
@@ -27,7 +27,14 @@
             messageArrived: false,
             messageType: "",
             resultDescription: "",
+            isBlurred: false
           }
+        },
+
+        mounted(){
+          setTimeout(() => {
+            this.isBlurred = true;
+          }, 1);  
         },
 
         components: {
@@ -122,17 +129,17 @@
     justify-content: center;
     z-index: 2;
     height: 100vh;
+    transition: backdrop-filter 0.3s ease-in;
+
   }
 
-  @keyframes blurBgAnimation {
-    0% {
-      backdrop-filter: blur(0);
-    }
-
-    100% {
-      backdrop-filter: blur(5px);
-    }
+  .notBlurBg {
+    backdrop-filter: blur(0px);
   }
+
+  .blurBg{
+    backdrop-filter: blur(5px);
+  } 
 
   @media screen and (max-height: 700px ) {
     #authModalCtn {
