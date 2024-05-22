@@ -46,11 +46,13 @@ input[type=button] {
     height: 40px;
     width: auto;
     margin-top: 20px;
-    background-color: #33A8CC;
+    background-color: #FDD85D;
     border-radius: 5px;
-    color: white;
+    color: #272525;
     font-size: 20px;
     cursor: pointer;
+    font-family: 'Roboto';
+    font-weight: 500;
 }
 
 
