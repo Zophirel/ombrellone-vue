@@ -117,6 +117,7 @@ export default {
                 this.userStore.user = user;
                 this.placeStore.setBookingRatioList(await PlaceRepository.getBookedRatios());
                 this.placeStore.setBookingPerPlaceList(await PlaceRepository.getAllReservationsPerPlace());
+                this.placeStore.setUserBooking(await PlaceRepository.getUserBookings());
                 
                 this.messageType = "success";
                 this.resultDescription = "Login effettuato!";
