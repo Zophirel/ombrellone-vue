@@ -1,7 +1,7 @@
 <template> 
     <div class="bg">
         <div id="blur">
-            <div class="ctn" :show="optionSelected === null"> 
+            <div class="ctn" :show="!isReservationModalOpen && !isBookedModalOpen "> 
                 <div class="tile" @click="toggleReservationModal()">
                     <img class="icon" src="/src/assets/book.svg"/>
                     <p>Nuova prenotazione</p>
@@ -16,12 +16,12 @@
                 </div>
             </div>
             <ReservationModal 
-                :placeProp="placeProp" 
-                :dateProp="new Date(parseInt(dateProp))" 
-                v-if="isReservationModalOpen && dateProp !== null"
+                :placeProp="getBookingData.place" 
+                :dateProp="getBookingData.date ? new Date(parseInt(getBookingData.date)) : null" 
+                v-if="isReservationModalOpen"
                 @toggleReservationModal = "toggleReservationModal"
             />
-            <BookedModal v-if="isBookedModalOpen"/>
+            <BookedModal @toggleBookedModal="toggleBookedModal" v-if="isBookedModalOpen"/>
         </div>
     </div>
 </template>
@@ -34,29 +34,35 @@
     export default {
         name: 'LoggedIn',
         props: {
-            optionProp: String,
-            dateProp: String,
-            placeProp: String
+            bookingData: String,
+            bookedData: Boolean
         },
 
-    
+        computed: {
+            getBookingData(){
+                return this.bookingData != undefined ? JSON.parse(this.bookingData) : '';
+            }
+        }, 
+
         methods: {
             selectOption(n){
                 this.optionSelected = n;
             },
             toggleReservationModal(){
                 this.isReservationModalOpen = !this.isReservationModalOpen;
+            },
+            toggleBookedModal(){
+                this.isBookedModalOpen = !this.isBookedModalOpen;
             }
         },
 
         data(){
-           return { 
-            optionSelected: null,
-            date: null,
-            isReservationModalOpen: false,
-            isBookedModalOpen: false
-
-        }
+            return { 
+                optionSelected: null,
+                date: null,
+                isReservationModalOpen: false,
+                isBookedModalOpen: false
+            }
         },
 
         setup(){
@@ -66,9 +72,12 @@
         }, 
 
         mounted(){
-            if(this.optionProp !== undefined || this.optionProp !== undefined){
-                this.optionSelected = this.optionProp;
+            if(this.getBookingData.date !== undefined){
                 this.toggleReservationModal();
+            }
+
+            if(this.bookedData){
+                this.isBookedModalOpen = true;
             }
         }, 
         components: {
