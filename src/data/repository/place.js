@@ -26,7 +26,6 @@ export const PlaceRepository = {
                 } else {
                     listOfPlace.push(elem);
                 }
-                
             });
 
             return listOfPlace;
@@ -35,26 +34,30 @@ export const PlaceRepository = {
         } 
     },
 
-    saveReservationInLocalStore: (date, place) =>{     
-        let index = parseInt(place.charAt(0));
-        let row = place.charAt(1);
+    saveReservationInLocalStore: (booking) =>{     
+        
         const placeStore = usePlaceStore();
         
         placeStore.getBookingPerPlace.filter((elem) => {
             if(elem.index){
-                if(elem.index === index && elem.row === row){
+                if(elem.index === booking.placeIndex && elem.row === booking.placeRow){
                     elem.reservations.push(date.toISOString()); 
                     return true;
                 }
             }
         });
+
+        if(placeStore.getUserBooking === null){
+            placeStore.setUserBooking([booking]);
+        } else {
+            placeStore.getUserBooking.push(booking);
+        }
     },
 
 
     makeReservarions: async (date, place, chair) => {
         let booking = await PlaceDatasource.bookPlace(date, place, chair);
         
-        console.log(booking);
         if(booking instanceof AxiosError ){            
             if(booking.response.status === 403){
                 const userStore = useUserStore();
@@ -62,9 +65,9 @@ export const PlaceRepository = {
                 return booking;
             }
         }else if(booking.status === 200) {
-            PlaceRepository.saveReservationInLocalStore(date, place);
             
-            return true;
+            PlaceRepository.saveReservationInLocalStore(booking);
+            console.log("booking saved")
         }   
     },
 
