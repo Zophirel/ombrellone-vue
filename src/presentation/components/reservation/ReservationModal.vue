@@ -10,7 +10,7 @@
             <div class="user-info">
                 <label>Data</label>
                 <Calendar 
-                    :date="date" 
+                    :date="dateProp" 
                     @setDateForAvaliablePlace="setCalendarDate"
                     @resetDate="resetDate()"
                     :warn="calendarWarn" 
@@ -22,8 +22,8 @@
                 <label>Posto</label>
                 <PlaceList 
                     :warn="placeListWarn"
-                    :placeProp="place" 
-                    :date="date"
+                    :placeProp="placeProp" 
+                    :date="dateProp ?? this.date"
                     @setPlace="setPlace"
                 />
                 <p>o</p>
