@@ -143,13 +143,14 @@ body {
   }
 }
  
-.home-in-bottom-enter-active, .booking-in-bottom-enter-active {
+.booking-in-bottom-enter-active {
   animation: moveInBottom 0.4s ease-out;
 }
 
-.home-in-bottom-leave-active, .booking-in-bottom-leave-active {
+.booking-in-bottom-leave-active {
   display: none;
 }
+
 
 @keyframes moveInTop {
   0% {
@@ -175,24 +176,33 @@ body {
 
 @keyframes moveInRight {
   0% {
-    transform: translateX(100px);
+    transform: translateX(50vw);
+    opacity: 0;
+  }
 
+  100% {
+    transform: translateX(0px);  
+    opacity: 1;
+  }
+}
+
+@keyframes moveInLeft {
+  0% {
+    transform: translateX(0px);
+    opacity: 1;
   }
   100% {
-    transform: translateX(0px);
-
+    transform: translateX(50vw);
+    opacity: 0;
+    
   }
 }
 
-
 .logged-in-right-enter-active {
-  animation: moveInRight 0.4s ease-out;
+  animation: moveInRight 0.3s ease-out 0.3s;
 }
 
-.logged-in-right-leave-active {
-  display: none;
+.home-out-right-leave-active, .logged-in-right-leave-active {
+  animation: moveInLeft 0.3s ease-out; 
 }
-
-
-
 </style>
