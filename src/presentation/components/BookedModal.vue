@@ -1,13 +1,19 @@
 <template>
   <div id="modal-bg">
       <div id="modal">
-          <div id="close" @click="closeModal">x</div>
+          <div id="close" @click="$emit('toggleBookedModal')">x</div>
           <h2>Prenotazioni</h2>
           <h2>Effettuate</h2>
           <ul>
-            <li v-for="booking in placeStore.getUserBooking">
+            <li v-for="(booking, index) in placeStore.getUserBooking" @click="goToBookingInfo(index)">
               <div class="tile">
-                {{ (new Date(booking.date)).toLocaleDateString() }}
+                <div class="date">
+                  <p class="dayName">{{ days[(new Date(booking.date)).getDay()] }}</p>
+                  <p class="dayNumber">{{ (new Date(booking.date)).toLocaleDateString() }}</p>
+                </div>
+                <div class="arrow">
+                  <img src="/src/assets/arrow_right.svg">
+                </div>
               </div>
             </li>
           </ul>
@@ -17,32 +23,28 @@
 <script>
 
 import { usePlaceStore } from "../../domain/place/placeStore";
-import { useRoute } from "vue-router";
+import { useRouter } from "vue-router";
 import { PlaceRepository } from "../../data/repository/place";
 export default {
   name: "BookedModal",
-    
+  emits:  ['toggleBookedModal'],
   setup(){
     const placeStore = usePlaceStore();
-    const router = useRoute();    
+    const router = useRouter();    
     return { placeStore, router }
   },
-
-  
 
   async mounted() {
 
     if(this.placeStore.getUserBooking === null){
-      console.log("BOOKED MOUNTED")
       this.placeStore.setUserBooking(await PlaceRepository.getUserBookings());
     }
-
-    console.log();
+    console.log(this.placeStore.getUserBooking)
   },
 
   data() {
     return {
-      
+      days: ['Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato', 'Domenica']
     };
   },
 
@@ -52,12 +54,18 @@ export default {
     }
   },
 
-  components: {
-  
-  },
-
   methods: {
+    async goToBookingInfo(index){
 
+      await this.router.push (
+        {
+          name: "BookedInfo",
+          params: {
+            bookingJsonData: JSON.stringify(this.placeStore.getUserBooking[index]) 
+          }
+        }
+      );
+    },
   }
 
 };
@@ -71,9 +79,23 @@ export default {
     height: 50px;
     background-color: #FDD85D;
     border-radius: 5px;
-
     margin-bottom: 15px;
+    align-items: center;
+    padding: 10px;
+    justify-content: space-between;
+    cursor: pointer;
+  }
 
+
+  .dayNumber {
+    margin: 0;
+    text-align: start;
+  }
+
+  .dayName {
+    margin: 0;
+    text-align: start;
+    font-size: 20px;
   }
 
   #close{
@@ -108,23 +130,28 @@ export default {
   #modal {
     background-color: white;
     z-index: 3;
-    padding: 30px; 
-    border-radius: 5px;      
+    padding: 30px;
+    border-radius: 5px;
     display: flex;
-    flex-direction: column;     
-  }
+    flex-direction: column;
+    padding-bottom: 10px;
+}
 
   ul {
     list-style: none;
     padding-left: 0;
     max-height: 500px;
     overflow: scroll;
+    width: 100%;
+    overflow-x: hidden;
+    padding-right: 10px;
   }
 
   h2{
     margin: 0;
     text-align: start;
     min-width: 300px;
+    font-size: 30px;
   }
 
 </style>
