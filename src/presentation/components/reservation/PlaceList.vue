@@ -47,9 +47,6 @@
         },
 
         async mounted(){
-  
-            console.log("PLACE LIST MOUNT")
-            console.log(this.date);
             // Get all the data regarding the avaliable places
             if(this.placeStore.getBookingPerPlace.length === 0){
                 this.placeStore.setBookingPerPlaceList(await PlaceRepository.getAllReservationsPerPlace()); 
@@ -81,8 +78,10 @@
                     return '';
                 }  else if(this.placeProp !== undefined && this.selectedPlace === null){
                     return this.placeProp;
+                } else if(this.date === null) {
+                    return '';
                 } else {
-                    let elementFound = this.places.find((elem) => {                        
+                    let elementFound = this.places.find((elem) => {           
                        if(elem.index && elem.reservations){
                             return `${elem.index}${elem.row}` === this.selectedPlace 
                                 && elem.reservations.includes(this.date.toISOString())
@@ -91,7 +90,6 @@
                     });
                     // reset the input
                     if(elementFound !== undefined){
-                        console.log("PLACE LIST RESET INPUT")
                         this.$emit('setPlace', undefined);
                         return "";
                     } else {
