@@ -35,13 +35,12 @@ export const PlaceRepository = {
     },
 
     saveReservationInLocalStore: (booking) =>{     
-        
         const placeStore = usePlaceStore();
         
         placeStore.getBookingPerPlace.filter((elem) => {
             if(elem.index){
                 if(elem.index === booking.placeIndex && elem.row === booking.placeRow){
-                    elem.reservations.push(date.toISOString()); 
+                    elem.reservations.push(booking.date); 
                     return true;
                 }
             }
@@ -65,9 +64,7 @@ export const PlaceRepository = {
                 return booking;
             }
         }else if(booking.status === 200) {
-            
-            PlaceRepository.saveReservationInLocalStore(booking);
-            console.log("booking saved")
+            PlaceRepository.saveReservationInLocalStore(booking.data);
         }   
     },
 
