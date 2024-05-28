@@ -25,8 +25,6 @@
 </template>
 <script>
 import { useRouter } from 'vue-router';
-import { useTransitionStore } from '../../domain/transition';
-
   export default {
     name: "BookedInfo",
   
@@ -36,8 +34,7 @@ import { useTransitionStore } from '../../domain/transition';
 
     setup(){
       const router = useRouter();
-      const transitionStore = useTransitionStore();
-      return { router, transitionStore }
+      return { router  }
     },
 
     computed: {
