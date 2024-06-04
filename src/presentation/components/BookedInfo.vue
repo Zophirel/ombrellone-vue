@@ -29,7 +29,7 @@ import { useRouter } from 'vue-router';
     name: "BookedInfo",
   
     props: {
-      bookingJsonData: String
+      bookingDataJSON: String
     },
 
     setup(){
@@ -39,7 +39,7 @@ import { useRouter } from 'vue-router';
 
     computed: {
       bookingData(){
-        return JSON.parse(this.bookingJsonData);
+        return JSON.parse(this.bookingDataJSON);
       }
     },
 
@@ -60,6 +60,19 @@ import { useRouter } from 'vue-router';
 
 <style scoped>  
 
+
+img{
+  align-self: start;
+  transform: rotate(180deg);
+  width: 40px;
+  height: 40px;
+  justify-self: start;
+  background-color: #008cba;
+  padding-left: 3px;
+  border-radius: 100px;
+  cursor: pointer;
+}
+
   .ctn{ 
     height: 100vh;
     width: 100vw;
@@ -73,11 +86,6 @@ import { useRouter } from 'vue-router';
 
   }
 
-  img{
-    transform: rotate(180deg);
-    justify-self: start;
-    height: 8vmin;
-  }
 
   #headerText{
     font-size: 24px;
