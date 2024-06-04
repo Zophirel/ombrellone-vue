@@ -3,7 +3,8 @@ import HomePage from './presentation/components/HomePage.vue'
 import BookingPage from './presentation/components/BookingPage.vue'
 import LoggedIn from './presentation/components/LoggedIn.vue'
 import BookedInfo from './presentation/components/BookedInfo.vue'
-
+import Payment from './presentation/components/reservation/Payment.vue'
+import PaymentSuccess from './presentation/components/reservation/PaymentSuccess.vue'
 const routes = [
   { 
     name: "HomeDefault",
@@ -29,7 +30,7 @@ const routes = [
 
   {
     name: "BookedInfo",
-    path: '/bookedinfo/:bookingJsonData',
+    path: '/bookedinfo/:bookingDataJSON',
     component: BookedInfo,
     props: true,
     meta: { transition: 'logged-in-right' }
@@ -52,11 +53,26 @@ const routes = [
 
   {  
     name: "LoggedInShowBooked",
-    path: '/logged/', 
+    path: '/logged', 
     component: LoggedIn,
-    props: {LoggedIn: true, bookedData: true},  
+    props: { LoggedIn: true, bookedData: true },  
     meta: { transition: 'logged-in-right' }
-  }
+  },
+
+  {  
+    name: "Payment",
+    path: '/payment/:paymentDataJSON', 
+    component: Payment,  
+    props: true,
+    meta: { transition: 'logged-in-right' }
+  },
+  {  
+    name: "PaymentSuccess",
+    path: '/payment/success', 
+    component: PaymentSuccess,  
+    meta: { transition: 'logged-in-right' }
+  },
+
 ]
 
 const router = createRouter({
