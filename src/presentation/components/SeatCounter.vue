@@ -2,9 +2,9 @@
     <div class="chair-option">
         <label>Sdraio</label>
         <div id="counter">
-            <button id="remove" @click="removeChair"><p>-</p></button>
+            <button id="remove" @click.prevent="removeChair"><p>-</p></button>
             <h3>{{ chair }}</h3>
-            <button id="add" @click="addChair"><p>+</p></button>
+            <button id="add" @click.prevent="addChair"><p>+</p></button>
         </div>
     </div>
 </template>
@@ -16,11 +16,12 @@
         emits: ["addChair", "removeChair"],
        
         data() {
-            return {chair : 1};
+            return { chair : 1 };
         },
         
         methods: {
             addChair(){
+            
                 if(this.chair < 4){
                     this.chair += 1;
                     this.$emit("addChair");
@@ -29,6 +30,7 @@
             },
 
             removeChair(){
+            
                 if(this.chair > 1){
                     this.chair -= 1;
                     this.$emit("removeChair");
