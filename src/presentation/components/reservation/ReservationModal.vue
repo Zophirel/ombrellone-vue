@@ -1,6 +1,6 @@
 <template>
     <div id="modal-bg">
-        <div id="modal" v-show="!operationCompleated">
+        <form id="modal">
             <div id="close" @click="closeModal">x</div>
             <div class="user-info">
                 <label>Nome e Congnome</label>
@@ -27,23 +27,19 @@
                     @setPlace="setPlace"
                 />
                 <p>o</p>
-                <button @click="goToBooking()"> <img src="/src/assets/map.svg" alt="">Usa mappa</button>
+                <button @click.prevent="goToBooking"> <img src="/src/assets/map.svg" alt="">Usa mappa</button>
             </div>
                  
             <SeatCounter @addChair="addChair" @removeChair="removeChair"/>
             
             <div class="total">
                 <label>Totale</label>
-                <label id="value">€{{ (price + (this.chair * 5) - 5 ) }}</label>
+                <label id="value">€{{ calculateOrderAmount(this.chair) }}</label>
             </div>
 
-           <input type="button" value="Conferma" @click="book()" >
-        </div>
-        <div id="success-modal" v-show="operationCompleated">
-            <h1 id="success">Prenotazione effettuata</h1>
-            <p id="success-p" >La prenotazione è stata confermata, per ogni necessità è recuperabile nella sezione <i>"Prenotaizoni effettuate"</i> del menù principale</p>
-            <button @click="closeModal">OK</button>
-        </div>
+           <input type="button" value="Vai al pagamento" @click="book()" >
+        </form>
+
     </div>
 </template>
     
@@ -54,8 +50,6 @@
     import PlaceList from './PlaceList.vue';
     import { useUserStore } from '../../../domain/user/userStore';
     import { useRouter } from 'vue-router';
-    import { PlaceRepository } from '../../../data/repository/place';
-    import { AxiosError } from 'axios';
 
     export default {
         name: 'ReservationModal',
@@ -74,13 +68,12 @@
                 fullName: "",
                 calendarWarn: { msg: "" },
                 placeListWarn: { msg: "" }, 
-                operationCompleated: false
             }
         },
 
         setup(){
             const router = useRouter();
-            const userStore = useUserStore();
+            const userStore = useUserStore();        
             return { router, userStore };
         },
 
@@ -130,8 +123,16 @@
                 this.router.replace({name: "LoggedInDefault"});  
             },
 
+            calculateOrderAmount(numChairs) {
+                const basePrice = 10;
+                const chairPrice = 5;
+                return basePrice + (numChairs > 1 ? (numChairs -1) * chairPrice : 0);
+            },
+
             async book() {
-                if(this.place === undefined){
+
+                console.log(this.place);
+                if(this.place === null || this.place === undefined){
                     this.placeListWarn = { msg: "Selziona un posto" };
                 }
                 
@@ -143,37 +144,36 @@
                     return;
                 }
 
-                let operation = await PlaceRepository.makeReservarions(this.date, this.place, this.chair);
-
-                if(operation instanceof AxiosError){
-                    console.log("axios error");
-                    return;
-                } else {
-                    this.operationCompleated = true;
-                    return;
+                const data = {
+                    chair: this.chair,
+                    date: this.date,
+                    fullName: this.fullName,
+                    place: this.place,
+                    price: this.calculateOrderAmount(this.chair)
                 }
+
+                this.router.push({path: `/payment/${JSON.stringify(data)}`})
             },
 
             async goToBooking()  {   
                 
-                if(this.dateProp && this.dateProp.toString() === "Invalid Date"){
-                    if(this.date === null){
-                        this.calendarWarn = { msg: "Seleziona una data" };
-                        return;
-                    }
-                }
-                
+
+                if(this.date === null){
+                    this.calendarWarn = { msg: "Seleziona una data" };
+                    return;
+                } 
+                 
                 if(this.date !== null) {
                     console.log("PUSH WITH DATE")
 
-                    await this.router.push({
+                    await this.router.replace({
                         name: "Booking",
                         params: { date: `${this.date.getTime()}` }
                     });
                 } else {
 
                     console.log("PUSH WITH DATEPROP")
-                    await this.router.push({
+                    await this.router.replace({
                         name: "Booking",
                         params: { date: `${this.dateProp.getTime()}` }
                     });
@@ -196,7 +196,7 @@
     }
 
     #success-p{
-        min-width: 300px;
+        max-width: 300px;
     }
 
     #success-modal{
@@ -276,10 +276,8 @@
         flex-direction: row;
         justify-content: space-between;
         font-weight: 900;
-        margin-top: 40px;   
-
+        margin-top: 40px;
     }
-
 
     #close{
         align-items: center;
