@@ -6,7 +6,8 @@
           <h2>Effettuate</h2>
           <ul>
             <li v-for="(booking, index) in placeStore.getUserBooking" @click="goToBookingInfo(index)">
-              <div class="tile">
+              <div :class="{tile: true, valid: isStillValid(booking.date) === true, notValid: !isStillValid(booking.date) === true}">
+
                 <div class="date">
                   <p class="dayName">{{ days[(new Date(booking.date)).getDay()] }}</p>
                   <p class="dayNumber">{{ (new Date(booking.date)).toLocaleDateString() }}</p>
@@ -24,7 +25,6 @@
 
 import { usePlaceStore } from "../../domain/place/placeStore";
 import { useRouter } from "vue-router";
-import { PlaceRepository } from "../../data/repository/place";
 export default {
   name: "BookedModal",
   emits:  ['toggleBookedModal'],
@@ -35,37 +35,49 @@ export default {
   },
 
   async mounted() {
-
-    if(this.placeStore.getUserBooking === null){
-      this.placeStore.setUserBooking(await PlaceRepository.getUserBookings());
-    }
-    console.log(this.placeStore.getUserBooking)
+    this.placeStore.setUserBooking(
+      this.placeStore.getUserBooking.sort((a,b) => {
+          return new Date(b.added) - new Date(a.added)
+        }
+      )
+    )
   },
 
   data() {
     return {
-      days: ['Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato', 'Domenica']
+      days: ['Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato', 'Domenica'],
+      
     };
-  },
-
-  computed: {
-    getUserBookings(){
-      return this.placeStore.getBookingPerPlace;
-    }
   },
 
   methods: {
     async goToBookingInfo(index){
-
       await this.router.push (
         {
           name: "BookedInfo",
           params: {
-            bookingJsonData: JSON.stringify(this.placeStore.getUserBooking[index]) 
+            bookingDataJSON: JSON.stringify(this.placeStore.getUserBooking[index]) 
           }
         }
       );
     },
+
+    isStillValid(date){
+      console.log(date);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      const bookingDate = new Date(date);
+      bookingDate.setHours(0, 0, 0, 0);
+      
+
+      if(bookingDate < today){
+        console.log("not valid");
+        return false;
+      }
+      console.log("valid");
+      return true;
+    }
   }
 
 };
@@ -77,15 +89,27 @@ export default {
   .tile{
     display: flex;
     height: 50px;
-    background-color: #FDD85D;
     border-radius: 5px;
     margin-bottom: 15px;
     align-items: center;
     padding: 10px;
     justify-content: space-between;
+  }
+
+  .valid{
+    background-color: #FDD85D;
     cursor: pointer;
   }
 
+  .valid:hover{
+    background-color: #FDC921;
+    cursor: pointer;
+  }
+
+  .notValid {
+    background-color: #9e9d9a;
+  
+  }
 
   .dayNumber {
     margin: 0;
