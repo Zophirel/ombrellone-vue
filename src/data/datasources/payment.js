@@ -44,10 +44,6 @@ export const PaymentDatasource = {
     payPalCheckout: async(data) => {
         data.row = parseInt(data.place.substring(0, data.place.length-1));
         data.column = data.place[data.place.length-1]; 
-        
-        delete data.place;
-        delete data.price;
-        delete data.fullName;
         return await axios.post('http://localhost:3000/paypal-checkout', data);
     },
 
