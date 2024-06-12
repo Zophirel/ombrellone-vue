@@ -24,8 +24,7 @@ export const PlaceDatasource = {
     },
 
     bookPlace: async (date, place, chair) => {
-        
-        console.log("BOOKING PLACE DATASOURCE")
+    
         try{
             const jsonData = {
                 row: place.length < 3 ? parseInt(place.charAt(0)) : parseInt(`${place.charAt(0)}${place.charAt(1)}`),
@@ -33,15 +32,9 @@ export const PlaceDatasource = {
                 date: date, 
                 chair: chair
             }
-
-            console.log(jsonData);
-
-            let response = await axios.post('http://localhost:3000/book', jsonData);
-            console.log(response);
             
+            let response = await axios.post('http://localhost:3000/book', jsonData);
             return response;
-
-
         } catch(err){
             console.log("error catched")
             return err;
@@ -51,8 +44,6 @@ export const PlaceDatasource = {
     getUserBookings: async () => {
         try{
             let response = await axios.get('http://localhost:3000/booked');            
-            console.log("GET USER BOOKINGS");
-            console.log(response);
             return response;
         } catch(err){
             console.log("error catched")
