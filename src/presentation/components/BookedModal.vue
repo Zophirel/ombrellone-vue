@@ -1,13 +1,11 @@
 <template>
   <div id="modal-bg">
       <div id="modal">
-          <div id="close" @click="$emit('toggleBookedModal')">x</div>
-          <h2>Prenotazioni</h2>
-          <h2>Effettuate</h2>
-          <ul>
-            <li v-for="(booking, index) in placeStore.getUserBooking" @click="goToBookingInfo(index)">
+          <div id="close" @click="$emit('closeModal')">x</div>
+          <h2>Prenotazioni Effettuate</h2>
+          <ul v-if="placeStore.getUserBooking.length > 0">
+            <li v-for="(booking, index) in placeStore.getUserBooking" @click="goToBookingInfo(index)" >
               <div :class="{tile: true, valid: isStillValid(booking.date) === true, notValid: !isStillValid(booking.date) === true}">
-
                 <div class="date">
                   <p class="dayName">{{ days[(new Date(booking.date)).getDay()] }}</p>
                   <p class="dayNumber">{{ (new Date(booking.date)).toLocaleDateString() }}</p>
@@ -18,6 +16,7 @@
               </div>
             </li>
           </ul>
+          <p v-if="placeStore.getUserBooking.length == 0">Non ci sono ancora prenotazioni disponibili</p>
       </div>
   </div>
 </template>
@@ -27,7 +26,7 @@ import { usePlaceStore } from "../../domain/place/placeStore";
 import { useRouter } from "vue-router";
 export default {
   name: "BookedModal",
-  emits:  ['toggleBookedModal'],
+  emits:  ['closeModal'],
   setup(){
     const placeStore = usePlaceStore();
     const router = useRouter();    
@@ -63,19 +62,17 @@ export default {
     },
 
     isStillValid(date){
-      console.log(date);
+
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       
       const bookingDate = new Date(date);
       bookingDate.setHours(0, 0, 0, 0);
-      
 
       if(bookingDate < today){
-        console.log("not valid");
         return false;
       }
-      console.log("valid");
+      
       return true;
     }
   }
@@ -139,7 +136,6 @@ export default {
     cursor: pointer;
   }
 
-
   #modal-bg {
     display: flex;
     z-index: 2;
@@ -159,7 +155,8 @@ export default {
     display: flex;
     flex-direction: column;
     padding-bottom: 10px;
-}
+    margin: 0 10px;
+  }
 
   ul {
     list-style: none;
