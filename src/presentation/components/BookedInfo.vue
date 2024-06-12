@@ -5,7 +5,7 @@
       <p id="headerText">Info prentoazione</p>
     </header>
     <main>
-      <div id="qr"></div>
+      <QrcodeVue :size=280 :value="bookingData.qrData"/>
       <h2> Nome e Cognome </h2>
       <p> {{ `${bookingData.userName} ${bookingData.userSurname}` }} </p>
       <hr>
@@ -25,6 +25,7 @@
 </template>
 <script>
 import { useRouter } from 'vue-router';
+import QrcodeVue from 'qrcode.vue'
   export default {
     name: "BookedInfo",
   
@@ -32,9 +33,17 @@ import { useRouter } from 'vue-router';
       bookingDataJSON: String
     },
 
+    components: {
+      QrcodeVue
+    },
+
     setup(){
       const router = useRouter();
       return { router  }
+    },
+
+    mounted(){
+      console.log(this.bookingData);
     },
 
     computed: {
@@ -77,16 +86,17 @@ img{
     height: 100vh;
     width: 100vw;
   }
+
+
   header{
     display: grid;
     grid-auto-flow: column;
     grid-template-columns: 0.1fr 0.8fr 0.1fr;
     align-items: center;
     padding: 20px;
-
+    justify-content: space-between;
   }
-
-
+  
   #headerText{
     font-size: 24px;
     margin: 0;
