@@ -24,7 +24,6 @@
                 await this.router.replace({name: "LoggedInDefault"})
             },
             async goToBookedPage(){
-                console.log("Logged in book")
                 await this.router.replace({name: "LoggedInShowBooked"})
             }
         } 
