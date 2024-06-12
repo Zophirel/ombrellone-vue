@@ -1,8 +1,11 @@
 <template> 
     <div class="bg">
         <div id="blur">
+            <div class="logout">
+                <img src="/src/assets/logout.svg" @click="logout">
+            </div>
             <div class="ctn" :show="!isReservationModalOpen && !isBookedModalOpen "> 
-                <div class="tile" @click="toggleReservationModal()">
+                <div class="tile" @click="isReservationModalOpen = true">
                     <img class="icon" src="/src/assets/book.svg"/>
                     <p>Nuova prenotazione</p>
                 </div>
@@ -10,18 +13,20 @@
                     <img class="icon" src="/src/assets/booked.svg"/>
                     <p>Prenotazioni effettuate</p>
                 </div>
-                <div class="tile">
+                <div class="tile" @click="isAccountModalOpen = true">
                     <img class="icon" src="/src/assets/account.svg"/>
                     <p>Account</p>
                 </div>
             </div>
+     
             <ReservationModal 
                 :placeProp="getBookingData.place" 
                 :dateProp="getBookingData.date ? new Date(parseInt(getBookingData.date)) : null" 
                 v-if="isReservationModalOpen"
-                @toggleReservationModal = "toggleReservationModal"
+                @closeModal= "isReservationModalOpen = false"
             />
-            <BookedModal @toggleBookedModal="toggleBookedModal" v-if="isBookedModalOpen"/>
+            <BookedModal @closeModal= "isBookedModalOpen = false" v-if="isBookedModalOpen"/>
+            <AccountModal @closeModal= "isAccountModalOpen = false" v-if="isAccountModalOpen" />
         </div>
     </div>
 </template>
@@ -29,7 +34,9 @@
 <script>
     import ReservationModal from './reservation/ReservationModal.vue';
     import BookedModal from './BookedModal.vue';
+    import AccountModal from './AccountModal.vue';
     import { useUserStore } from '../../domain/user/userStore';
+    import { useRouter } from 'vue-router';
 
     export default {
         name: 'LoggedIn',
@@ -45,30 +52,27 @@
         }, 
 
         methods: {
-            selectOption(n){
-                this.optionSelected = n;
-            },
             toggleReservationModal(){
                 this.isReservationModalOpen = !this.isReservationModalOpen;
             },
-            toggleBookedModal(){
-                this.isBookedModalOpen = !this.isBookedModalOpen;
+            logout(){
+                this.userStore.logOutUser();
+                this.router.back()
             }
         },
 
         data(){
             return { 
-                optionSelected: null,
-                date: null,
                 isReservationModalOpen: false,
-                isBookedModalOpen: false
+                isBookedModalOpen: false,
+                isAccountModalOpen: false
             }
         },
 
         setup(){
             const userStore = useUserStore();
-            
-            return {userStore};
+            const router = useRouter();
+            return {userStore, router};
         }, 
 
         mounted(){
@@ -82,7 +86,8 @@
         }, 
         components: {
             ReservationModal,
-            BookedModal
+            BookedModal,
+            AccountModal
         }
     }
 </script>
@@ -94,7 +99,6 @@
         height: 100%;
         display: flex;
         align-items: center;
-        justify-content: center;
         background-image: url('/src/assets/app_bg_r.jpg');
         background-position: center;
         background-size: cover;
@@ -139,5 +143,20 @@
     .tile:hover{
         background-color: #FDC921;
     }  
+    
+    .logout{
+        position: absolute;
+        top: 20px;
+        right: 25px;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #113f4f;
+        padding-left: 3px;
+        border-radius: 100px;
+        cursor: pointer;
+    }
 </style>
   
