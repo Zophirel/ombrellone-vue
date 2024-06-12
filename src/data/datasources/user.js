@@ -4,7 +4,6 @@ const axios = Axios.create({
 })
 
 export const UserDatasource = {
-
     
     initServerSession: async () => {
         try{
@@ -14,7 +13,6 @@ export const UserDatasource = {
             return err;
         } 
     },
-
 
     login: async ( userData ) => {
  
@@ -36,7 +34,6 @@ export const UserDatasource = {
         }
     },
 
-
     signup: async ( userData ) => {
        
         let isInit = await UserDatasource.initServerSession();
@@ -57,6 +54,16 @@ export const UserDatasource = {
                 console.error('Error during POST request: ', err);
                 return err
             }
+        }
+    },
+
+    editUserInfo: async (data) => {
+        try{
+            let response = await axios.put('http://localhost:3000/edit-user-info', data);
+            return response;
+        } catch (err){
+            console.error(err);
+            return err;
         }
     }
 }

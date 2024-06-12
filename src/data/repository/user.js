@@ -26,7 +26,7 @@ export const UserRepository = {
 
     signup: async ( userData ) => {
         try {
-            let response = UserDatasource.signup(userData);
+            let response = await UserDatasource.signup(userData);
             if(response.status == 200){
                 return "Utente registrato, si prega di fare login";
             } 
@@ -36,5 +36,18 @@ export const UserRepository = {
             console.error('Error during POST request: ', err);
             return err
         }
-    }    
+    },
+
+    editUserInfo: async ( userData ) => {
+        try {
+            let response = await UserDatasource.editUserInfo(userData);
+            if(response.status == 200){
+                return { msg : "Dati utente modificati correttamente" };
+            } 
+            return { error: response.response.data[0].msg }
+        } catch (err) {
+            console.error('Error during POST request: ', err);
+            return { error: err }
+        }
+    }
 }
