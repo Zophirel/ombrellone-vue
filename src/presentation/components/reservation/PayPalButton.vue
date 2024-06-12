@@ -12,10 +12,6 @@
   export default {
     name: "PayPalButton",
     props: {
-      clientId: {
-        type: String,
-        required: true,
-      },
 
       chair: {
         type: Number,
@@ -35,32 +31,26 @@
     },
     methods: {
       initializePayPalButton() {
-        loadScript({ "client-id": this.clientId, currency: "EUR" })
+        loadScript({ "client-id": import.meta.env.VITE_PAYPAL_KEY, currency: "EUR" })
           .then((paypal) => {
             paypal.Buttons({
               createOrder: async () => {
                 try {
-
                   const response = await PaymentDatasource.payPalCheckout(this.requestData);
-                  console.log('Order created:', response.data);
                   return response.data.id;
                 } catch (error) {
-                  console.error("Error creating order", error.response || error.message);
                   throw error;
                 }
               },
               onApprove: async () => {
                 try {
-                 
                   const response = await PaymentDatasource.payPalBuy();
                   if(response.status === 200){
                     PlaceRepository.saveReservationInLocalStore(response.data);
                     this.router.back();
                     this.router.replace({name: "PaymentSuccess"});
                   }
-
                   return;
-
                 } catch (error) {
                   console.error("Error capturing order", error.response || error.message);
                 }
