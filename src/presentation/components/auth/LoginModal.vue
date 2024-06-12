@@ -108,12 +108,13 @@ export default {
             }
 
             let user = await UserRepository.login(userData);
-
+            
             if(user instanceof User){
                 this.hideLoginFieldError();
                
                 
                 this.userStore.isLogin = true;
+                user.email = this.email;
                 this.userStore.user = user;
                 this.placeStore.setBookingRatioList(await PlaceRepository.getBookedRatios());
                 this.placeStore.setBookingPerPlaceList(await PlaceRepository.getAllReservationsPerPlace());
@@ -123,21 +124,23 @@ export default {
                 this.resultDescription = "Login effettuato!";
                 this.toggleMessage();
                 
-                await this.router.replace({name: "LoggedInDefault"} );
+                await this.router.push({name: "LoggedInDefault"} );
          
             } 
             
             else if(user instanceof AxiosError) {
                 this.messageType = "error";
-      
-                if(!user.response.data.errors){
-                    console.log(user.response.data)
-                    this.resultDescription = user.response.data.msg;
-                    this.toggleMessage();
-                }else{
-                    this.showLoginFieldError(user.response.data.errors);
+               if(user.response.data){
+                    if(!user.response.data.errors){
+                        console.log(user.response.data)
+                        this.resultDescription = user.response.data.msg;
+                        this.toggleMessage();
+                    }else{
+                        this.showLoginFieldError(user.response.data.errors);
+                    }
                 }
             }
+             
         },
     }
 };
