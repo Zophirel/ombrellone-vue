@@ -1,7 +1,7 @@
 <template>
     <div id="modal-bg">
         <form id="modal">
-            <div id="close" @click="closeModal">x</div>
+            <div id="close" @click="$emit('closeModal')">x</div>
             <div class="user-info">
                 <label>Nome e Congnome</label>
                 <input type="text" class="input" :placeholder="fullName" disabled>
@@ -53,7 +53,7 @@
 
     export default {
         name: 'ReservationModal',
-        emits: ["toggleReservationModal"],
+        emits: ["closeModal"],
         props: {
             placeProp: String,
             dateProp : Date,
@@ -118,11 +118,6 @@
                 this.placeListWarn = { msg: "" };
             }, 
 
-            async closeModal(){       
-                this.$emit("toggleReservationModal");
-                this.router.replace({name: "LoggedInDefault"});  
-            },
-
             calculateOrderAmount(numChairs) {
                 const basePrice = 10;
                 const chairPrice = 5;
@@ -130,8 +125,6 @@
             },
 
             async book() {
-
-                console.log(this.place);
                 if(this.place === null || this.place === undefined){
                     this.placeListWarn = { msg: "Selziona un posto" };
                 }
@@ -156,23 +149,18 @@
             },
 
             async goToBooking()  {   
-                
-
+            
                 if(this.date === null){
                     this.calendarWarn = { msg: "Seleziona una data" };
                     return;
                 } 
                  
                 if(this.date !== null) {
-                    console.log("PUSH WITH DATE")
-
                     await this.router.replace({
                         name: "Booking",
                         params: { date: `${this.date.getTime()}` }
                     });
                 } else {
-
-                    console.log("PUSH WITH DATEPROP")
                     await this.router.replace({
                         name: "Booking",
                         params: { date: `${this.dateProp.getTime()}` }
