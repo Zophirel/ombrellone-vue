@@ -37,10 +37,10 @@
 
 #messageColor {
   padding: 9px;
-    border-radius: 2px;
-    height: auto;
-    margin: 5px auto;
-    margin-bottom: 30px;
+  border-radius: 2px;
+  height: auto;
+  margin: 5px auto;
+  margin-bottom: 30px;
 }
 
 .success {
@@ -58,6 +58,7 @@
 }
 
 #resultDescription {
+  max-width: 212px;
   font-weight: 600;
   text-align: center;
   margin: 0;
