@@ -176,7 +176,7 @@ body {
 
 @keyframes moveInRight {
   0% {
-    transform: translateX(50vw);
+    transform: translateX(10vw);
     opacity: 0;
   }
 
@@ -192,7 +192,7 @@ body {
     opacity: 1;
   }
   100% {
-    transform: translateX(50vw);
+    transform: translateX(10vw);
     opacity: 0;
     
   }
