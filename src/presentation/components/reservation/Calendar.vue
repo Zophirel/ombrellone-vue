@@ -14,11 +14,11 @@
             <div class="calendarWrapper">
                 <div class="calendar" v-show="showCalendar">
                     <div id="monthInput"> 
-                        <button  @click="getPreviousMonth()">
+                        <button  @click.prevent="getPreviousMonth()">
                             <span id="lbtn"><</span>    
                         </button>
                         <h3> {{ selectedMonthName }} </h3>
-                        <button  @click="getNextMonth()">
+                        <button  @click.prevent="getNextMonth()">
                             <span id="rbtn">></span>    
                         </button>
                     </div>
@@ -31,14 +31,18 @@
                             <p class="daysName">Ven</p>
                             <p class="daysName">Sab</p>
                             <p class="daysName">Dom</p>
-                            <div v-for="day in selectedMonth" :class="{
+                            <div
+                                v-for="day in selectedMonth" 
+                                :class="{
                                     daysNumber: true, 
                                     activeDaysNumber: selectedDay === day.date, 
                                     avaliable: day.status === 'avaliable',
                                     almostFull: day.status === 'almostFull',
                                     full: day.status === 'full',
-                                    notAvaliable : day.status === 'notAvaliable'
-                                }" @click="handleDayClick(day)"> 
+                                    notAvaliable : day.status === 'notAvaliable',
+                                    expiredDate : day.status === 'expiredDate'
+                                   
+                                }" @click="(day.status !== 'notAvaliable' && day.status !== 'expiredDate')  ? handleDayClick(day) : null"> 
                                 <p> {{ day.date.getDate() }}</p>
                             </div> 
                         </div>
@@ -161,12 +165,24 @@
 
 
             setCalendarDayStatus(totalPlaces, i, date){
+                const initDate = new Date();
+                initDate.setDate(initDate.getDate()-1);
+                
+                const endDate = new Date(`05-31-${new Date().getFullYear()}`);
+
                 console.log("Set Calendar Days Status")
                 let numberOfBookings = 0; 
+            
                 if(this.placeStore.getBookingPerPlace[i].reservations){
                     numberOfBookings = this.placeStore.getBookingPerPlace[i].reservations.length 
                 }
-                
+
+                if(date < initDate && date > endDate){
+                    return {
+                        date: new Date(date),
+                        status: "expiredDate"
+                    }
+                }
                 
                 if(date.getMonth() + 1 > 5 && date.getMonth() + 1 < 10 ){
                     if(numberOfBookings <= 0.5 * totalPlaces){
@@ -187,12 +203,10 @@
                     }
                 } else {
                     return {
-                            date: new Date(date),
-                            status: "notAvaliable"
-                        }
-                }
-
-        
+                        date: new Date(date),
+                        status: "notAvaliable"
+                    }
+                }        
             },
 
             async initCalendar(){
@@ -263,9 +277,9 @@
 
     
     .calendarWrapper{
-         height: 0;
-         width: 0;
-         position: relative;
+        height: 0;
+        width: 0;
+        position: relative;
     }
 
     .calendar{
@@ -370,6 +384,12 @@
 
     .full {
         background-color: #ff7065;
+        border-radius: 3px;
+    }
+
+    .expiredDate {
+        background-color: lightgray;
+        border-radius: 3px;
     }
     
     .activeDaysNumber{
