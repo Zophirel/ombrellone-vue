@@ -38,7 +38,6 @@
         <PayPalButton
         :requestData="getPaymentData"
         :chair=this.getPaymentData.chair
-        :clientId=process.env.PAYPAL_KEY 
       />
       </div>
 
@@ -87,17 +86,7 @@
     },
 
     async mounted() {
-      this.stripe = await loadStripe(process.env.STRIPE_KEY);
-      console.log(this.stripe);
-      const options = {
-      layout: {
-        type: 'accordion',
-        defaultCollapsed: false,
-        radios: false,
-        spacedAccordionItems: true
-      }
-    };
-     
+      this.stripe = await loadStripe(import.meta.env.VITE_STRIPE_KEY);     
       this.clientSecret = await PaymentDatasource.getStripeClientSecret();
       this.elements = this.stripe.elements({clientSecret: this.clientSecret});
       this.cardElement = this.elements.create('card');
@@ -145,7 +134,6 @@
           }
 
         } catch (e) {
-          console.log(e);
           this.errorMessage = 'An error occurred. Please try again.';
         }
       }
