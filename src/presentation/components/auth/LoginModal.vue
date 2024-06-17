@@ -1,6 +1,6 @@
 <template>
     <form>
-        <ResponseNotification :messageType="messageType" :message="resultDescription" v-show="messageArrived"/>
+        <ResponseNotification :messageType="messageType" :message="resultDescription" :isVisible="messageArrived"/>
         <label>E-mail</label>
         <input :class="{inputError: emailError != ''}" v-model="email" type="text" id="email" name="email" placeholder="mario@rossi.it">
         <ul class="errorMessage" v-show="emailError != ''">
@@ -8,8 +8,8 @@
         </ul>
         
         <label>Passowrd</label>
-        <div class="passwordCtn">
-            <input :class="{inputError: passwordError != ''}" v-model="password" :type="isPasswordVisibile ? 'text' : 'password'" id="password" name="password" placeholder="• • • • • •">
+        <div class="passwordCtn" :class="{inputError: passwordError != ''}">
+            <input  v-model="password" :type="isPasswordVisibile ? 'text' : 'password'" id="password" name="password" placeholder="• • • • • •">
             <span @click="togglePasswordVisibility"><img :src="visibilityIcon"></span>
         </div>
        
@@ -33,9 +33,7 @@ import ResponseNotification from './ResponseNotification.vue'
 import { usePlaceStore } from '../../../domain/place/placeStore';
 import { PlaceRepository } from '../../../data/repository/place';
 import { AxiosError } from 'axios';
-import router from '../../../router';
 import { useRouter } from 'vue-router';
-
 
 export default {
     name: 'LoginModal',
@@ -58,12 +56,11 @@ export default {
             passwordError: "",
             visibilityIcon: "/src/assets/auth/visibility_off.svg",
             isPasswordVisibile: false
-     
         }
     },
 
     components: {
-        ResponseNotification
+        ResponseNotification,
     },
 
     methods : {
@@ -83,7 +80,7 @@ export default {
             
             setTimeout(() => {
                 this.messageArrived = false;
-            }, 3000);
+            }, 5000);
         },
 
         hideLoginFieldError(){
@@ -111,21 +108,13 @@ export default {
             
             if(user instanceof User){
                 this.hideLoginFieldError();
-               
-                
                 this.userStore.isLogin = true;
                 user.email = this.email;
                 this.userStore.user = user;
                 this.placeStore.setBookingRatioList(await PlaceRepository.getBookedRatios());
                 this.placeStore.setBookingPerPlaceList(await PlaceRepository.getAllReservationsPerPlace());
                 this.placeStore.setUserBooking(await PlaceRepository.getUserBookings());
-                
-                this.messageType = "success";
-                this.resultDescription = "Login effettuato!";
-                this.toggleMessage();
-                
-                await this.router.push({name: "LoggedInDefault"} );
-         
+                await this.router.replace({name: "LoggedInDefault"} );
             } 
             
             else if(user instanceof AxiosError) {
@@ -147,7 +136,7 @@ export default {
 </script>
 
 <style scoped>
-@import "../../../authModals.css";
+@import "/src/authModals.css";
 
 input[type="password"]{
     margin-bottom: 0;
