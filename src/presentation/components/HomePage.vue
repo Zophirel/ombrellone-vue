@@ -13,7 +13,6 @@
   import Calendar from "./reservation/Calendar.vue";
   import { useUserStore } from '../../domain/user/userStore';
   import ReservationModal from "./reservation/ReservationModal.vue";
-  import { useRouter } from "vue-router";
 
   export default {
     name: 'HomePage',
@@ -57,20 +56,6 @@
   #button > p {
     margin: 0;
     font-weight: bold;
-  }
-
-  @keyframes arrow {
-    0%{
-      bottom: 3px;  
-    }
-    
-    50%{
-      bottom: -4px;  
-    }
-    
-    100%{
-      bottom: 3px;
-    }
   }
 
   #button > img {
@@ -127,14 +112,6 @@
       position: relative;
       width: 90vw;
       top: 0;
-    }
-  }
-
-  @media screen and (max-width: 900px) {
-    .home-page-ctn {
-      grid-template-areas: "htext"
-                          "img"
-                          "button";
     }
   }
 
