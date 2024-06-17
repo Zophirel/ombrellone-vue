@@ -6,35 +6,39 @@
         <ul class="errorMessage" v-show="emailError != ''">
             <li>{{ emailError }}</li>
         </ul>
-        <input type="button" value="Cambia Password" @click="lostPass">
+        <input type="button" value="Cambia Password" @click="resetPassword">
         <p id="signUp" @click="$emit('setState', 'signUp')">Non hai un Account?</p>
     </form>
 </template>
     
   
 <script>
-import { ref } from 'vue';
 import ResponseNotification from './ResponseNotification.vue'
-
+import ResetPassModal from './ResetPassModal.vue';
+import { useRouter } from 'vue-router';
+import { UserRepository } from '../../../data/repository/user';
 export default {
     name: 'LostPassModal',
 
     setup(){
-        const email = ref('');
-        return { email };
+        const router = useRouter();
+        return { router }
     },
 
     data(){
         return {
+            email: '',
             messageArrived: false,
             messageType: "",
             resultDescription: "",
             emailError: "",
-        }
+            emailNotConfirmedYet: true
+        }  
     },
 
     components: {
-        ResponseNotification
+        ResponseNotification,
+        ResetPassModal
     },
 
     methods : {
@@ -59,6 +63,23 @@ export default {
                 }
             })
         },
+
+        async resetPassword(){
+            let response = await UserRepository.requestChangePassword(this.email);
+            console.log(response);
+            
+            if(response.error){
+                this.messageType = 'error';
+                this.resultDescription = response.error;
+                this.toggleMessage();
+                return;
+            }
+
+            this.messageType = 'success';
+            this.resultDescription = response.msg;
+            this.toggleMessage();
+            return;
+        }
     }
 };
 </script>
