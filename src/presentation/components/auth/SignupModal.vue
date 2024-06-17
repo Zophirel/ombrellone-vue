@@ -1,6 +1,6 @@
 <template>
     <form>
-        <ResponseNotification :messageType="messageType" :message="resultDescription" v-show="messageArrived"/>
+        <ResponseNotification :messageType="messageType" :message="resultDescription" :isVisible="messageArrived"/>
         <label>Nome</label>
         <input :class="{inputError: nameError != ''}" v-model="name" type="text" name="name" placeholder="Mario">
         <ul class="errorMessage" v-show="nameError != ''">
@@ -25,8 +25,8 @@
             <li>{{ emailError }}</li>
         </ul>
         <label>Passowrd</label>
-        <div class="passwordCtn">
-            <input :class="{inputError: passwordError != ''}" v-model="password" :type="isPasswordVisibile ? 'text' : 'password'" id="password" name="password" placeholder="• • • • • •">
+        <div class="passwordCtn" :class="{inputError: passwordError != ''}">
+            <input  v-model="password" :type="isPasswordVisibile ? 'text' : 'password'" id="password" name="password" placeholder="• • • • • •">
             <span @click="togglePasswordVisibility"><img :src="visibilityIcon"></span>
         </div>
 
@@ -39,10 +39,8 @@
 <script>
 import { UserRepository } from '../../../data/repository/user';
 import { useUserStore } from '../../../domain/user/userStore';
-import User from "../../../domain/user/user"; 
 import { ref } from 'vue';
 import ResponseNotification from './ResponseNotification.vue'
-import { AxiosError } from 'axios';
 
 export default {
     name: 'LoginModal',
@@ -98,7 +96,7 @@ export default {
                     this.$emit("setState", "login");
                 }
                
-            }, 3000);
+            }, 5000);
         },
 
         hideLoginFieldError(){
@@ -112,13 +110,12 @@ export default {
         
 
         showLoginFieldError( errors ){
-            console.log(`SIGNUP DATE ${errors}`)
             errors.map((error) => {
                 if(error.path === "name"){
                     this.nameError = error.msg
                 } else if(error.path === "surname"){
                     this.surnameError = error.msg
-                }  else if(error.path === "email"){
+                } else if(error.path === "email"){
                     this.emailError = error.msg;
                 } else if(error.path === "password"){
                     this.passwordError = error.msg;
@@ -130,19 +127,22 @@ export default {
 
               
         async signup(){        
-              const userData = {
+            const userData = {
                 name: this.name,
                 surname: this.surname,
                 email: this.email, 
                 password: this.password,
                 tel: this.tel
-              }
-              
-              let response = await UserRepository.signup(userData);
-              
-              if(response instanceof Error){
+            }
+            
+            const response = await UserRepository.signup(userData);
+            console.log("SIGNUP RESPONSE");
+            console.log(response);
+           
+        
+            if(response instanceof Error){
                 this.messageType = "error";
-              
+            
                 if(!response.response.data.errors){
                     this.resultDescription = response.response.data.msg;
                     this.toggleMessage();
@@ -150,47 +150,12 @@ export default {
                     this.showLoginFieldError(response.response.data.errors);
                 }
 
-              } else {
+            } else {
                 this.hideLoginFieldError();
                 this.messageType = "success";
-              
+                
                 this.resultDescription = response;
                 this.toggleMessage();
-
-                
-              }
-      
-            },
-
-        async login(){      
-            const userData = {
-                email: this.email, 
-                password: this.password
-            }
-
-            let user = await UserRepository.login(userData);
-
-            if(user instanceof User){
-                this.hideLoginFieldError();
-                
-                this.userStore.isLogin = true;
-                this.userStore.user = user;
-                this.messageType = "success";
-                this.resultDescription = "Login effettuato!";
-                
-                this.toggleMessage();
-            } 
-            
-            else if(user instanceof AxiosError) {
-                this.messageType = "error";
-      
-                if(!user.response.data.errors){
-                    console.log(user.response.data)
-                    this.resultDescription = user.response.data.msg;
-                    this.toggleMessage();
-                }else{
-                    this.showLoginFieldError(user.response.data.errors);
-                }
             }
         },
     }
@@ -213,7 +178,6 @@ input[type="password"]:focus-visible{
     display: flex;
     flex-direction: row;
     border-radius: 5px;
-    gap: 10px;
 }
 
 .passwordCtn > span{
@@ -229,7 +193,6 @@ input[type="password"]:focus-visible{
     margin-bottom: 0;
     border: none;
     padding-right: 0;
-    width: 155px;
 }
 
 
