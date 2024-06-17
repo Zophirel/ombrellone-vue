@@ -20,10 +20,10 @@
             </div>
      
             <ReservationModal 
-                :placeProp="getBookingData.place" 
-                :dateProp="getBookingData.date ? new Date(parseInt(getBookingData.date)) : null" 
+                :placeProp="place" 
+                :dateProp="date ? new Date(parseInt(date)) : null" 
                 v-if="isReservationModalOpen"
-                @closeModal= "isReservationModalOpen = false"
+                @closeModal= "toggleReservationModal()"
             />
             <BookedModal @closeModal= "isBookedModalOpen = false" v-if="isBookedModalOpen"/>
             <AccountModal @closeModal= "isAccountModalOpen = false" v-if="isAccountModalOpen" />
@@ -37,27 +37,28 @@
     import AccountModal from './AccountModal.vue';
     import { useUserStore } from '../../domain/user/userStore';
     import { useRouter } from 'vue-router';
-
+    import { UserRepository } from '../../data/repository/user';
     export default {
         name: 'LoggedIn',
         props: {
-            bookingData: String,
+            placeProp: String,
+            dateProp: String,
             bookedData: Boolean
-        },
-
-        computed: {
-            getBookingData(){
-                return this.bookingData != undefined ? JSON.parse(this.bookingData) : '';
-            }
         }, 
 
         methods: {
             toggleReservationModal(){
                 this.isReservationModalOpen = !this.isReservationModalOpen;
+                if(!this.isReservationModalOpen){
+                    console.log("deleted value")
+                    this.place = null;
+                    this.date = null;
+                }
             },
-            logout(){
-                this.userStore.logOutUser();
-                this.router.back()
+            async logout(){     
+                this.router.replace({name: "HomeDefault"});
+                await UserRepository.logout();
+                this.userStore.logOutUser();  
             }
         },
 
@@ -65,7 +66,9 @@
             return { 
                 isReservationModalOpen: false,
                 isBookedModalOpen: false,
-                isAccountModalOpen: false
+                isAccountModalOpen: false,
+                date: null,
+                place: null,
             }
         },
 
@@ -76,8 +79,13 @@
         }, 
 
         mounted(){
-            if(this.getBookingData.date !== undefined){
+            console.log("LOGGED IN PROPPLACE")
+            console.log(this.placeProp);
+
+            if(this.dateProp !== undefined){
                 this.toggleReservationModal();
+                this.date = this.dateProp;
+                this.place = this.placeProp;
             }
 
             if(this.bookedData){
