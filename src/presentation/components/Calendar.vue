@@ -1,62 +1,3 @@
-<style scoped>
-    .calendar-bg{
-        position: absolute;
-        z-index: 1;
-        height: 100%;
-        background-color: lightblue;
-        width: 100vw;
-        right: 0;
-    }
-
-    header {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-        margin: 20px;
-        opacity: 1;
-    }
-
-    .header-enter-active {
-        transition: opacity 0.4s ease-out;
-    }
-
-    .header-leave-active {
-        transition: opacity 0.4s ease-in;
-    }
-
-    .header-leave-to,
-    .header-enter-from {
-        opacity: 0;
-    }
-
-    .header-enter-to,
-    .header-leave-from {
-        opacity: 1;
-    }
-
-
-    button{
-        height: 50px;
-        width: 50px;
-        font-size: 30px;
-        font-weight: bold;
-    }
-    
-    h1{
-    margin: 0;
-    min-width: 125px;
-}
-    main {
-        display: grid;
-        justify-content: center;
-        grid-template-columns: repeat(7, minmax(20px, 10vh) );
-        grid-template-rows: repeat(5, minmax(20px, 10vh));
-        height: 90vh;
-        width: 100vw;   
-    }
-</style>
-
 <template>
     <div class="calendar-bg" v-show="this.mounted">
         <Transition name = "header">
@@ -156,3 +97,62 @@ import CalendarCell from './CalendarCell.vue';
         }
     };
 </script>
+
+<style scoped>
+    .calendar-bg{
+        position: absolute;
+        z-index: 1;
+        height: 100%;
+        background-color: lightblue;
+        width: 100vw;
+        right: 0;
+    }
+
+    header {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        margin: 20px;
+        opacity: 1;
+    }
+
+    .header-enter-active {
+        transition: opacity 0.4s ease-out;
+    }
+
+    .header-leave-active {
+        transition: opacity 0.4s ease-in;
+    }
+
+    .header-leave-to,
+    .header-enter-from {
+        opacity: 0;
+    }
+
+    .header-enter-to,
+    .header-leave-from {
+        opacity: 1;
+    }
+
+
+    button{
+        height: 50px;
+        width: 50px;
+        font-size: 30px;
+        font-weight: bold;
+    }
+    
+    h1{
+    margin: 0;
+    min-width: 125px;
+}
+    main {
+        display: grid;
+        justify-content: center;
+        grid-template-columns: repeat(7, minmax(20px, 10vh) );
+        grid-template-rows: repeat(5, minmax(20px, 10vh));
+        height: 90vh;
+        width: 100vw;   
+    }
+</style>
