@@ -26,15 +26,13 @@ export default {
   methods: {
     async continueBooking(){
       if(!this.cellData.reservations.includes(this.date.toISOString())){
-        this.router.go(-1);
         await this.router.replace(
         { 
           name: "LoggedInBook", 
           params: {
-            bookingData: JSON.stringify({
-              place: this.cellId,
-              date: this.date.getTime()
-            }),
+            booked: true, 
+            placeProp: `${this.cellId}`,
+            dateProp: `${this.date.getTime()}`
           } 
         });
       }
