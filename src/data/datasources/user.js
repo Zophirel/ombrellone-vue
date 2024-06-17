@@ -51,8 +51,7 @@ export const UserDatasource = {
                 return response;        
                 
             } catch (err) {
-                console.error('Error during POST request: ', err);
-                return err
+                throw err
             }
         }
     },
@@ -61,6 +60,41 @@ export const UserDatasource = {
         try{
             let response = await axios.put('http://localhost:3000/edit-user-info', data);
             return response;
+        } catch (err){
+            console.error(err);
+            return err;
+        }
+    },
+    
+    logout: async () => {
+        try{
+            let response = await axios.post('http://localhost:3000/logout');
+            console.log(response);
+            return response;
+      
+        } catch (err){
+            console.error(err);
+            return err;
+        }
+    },
+
+    changePassword: async (data) => {
+        try{
+            let response = await axios.post('http://localhost:3000/change-password', data);
+            console.log(response);
+            return response;
+      
+        } catch (err){
+            console.error(err);
+            return err;
+        }
+    },
+
+    requestChangePassword: async (email) => {
+        try{
+            let response = await axios.post('http://localhost:3000/request-change-password', {email: email});
+            return response;
+      
         } catch (err){
             console.error(err);
             return err;
