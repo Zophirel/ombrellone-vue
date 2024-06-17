@@ -125,7 +125,6 @@
             console.log(response);
             if(response.status === 200){
               console.log("payment successful")
-              this.router.back();
               this.router.replace({name: "PaymentSuccess"});
             } else {
               console.log("payment failed")
