@@ -3,8 +3,10 @@
 <template>
   <div class="endState" v-show="isVisible">
       <div id="messageColor" :class="messageType">
-          <p id="resultDescription"> {{ message }}</p>
+        <p id="resultDescription"> {{ message }}</p>
+        <div :class="{ basicTimeline: !isVisible, animatedTimeline: isVisible }"></div>
       </div> 
+
   </div> 
 </template>
   
@@ -14,7 +16,6 @@
 
       data(){
           return {
-
             error: false,
             success: false
           }
@@ -36,11 +37,37 @@
 <style scoped>
 
 #messageColor {
-  padding: 9px;
+  padding: 10px;
+  padding-bottom: 1px;
   border-radius: 2px;
   height: auto;
   margin: 5px auto;
   margin-bottom: 30px;
+}
+
+.basicTimeline {
+  height: 5px;
+  background-color: black;
+  border-radius: 1px;
+  margin: 5px auto;
+}
+
+.animatedTimeline {
+  height: 5px;
+  background-color: black;
+  border-radius: 1px;
+  margin: 5px auto;
+  animation: timeline 5s ease-in ;
+}
+
+@keyframes timeline {
+  0% {
+    width: 100%;
+  }
+  
+  100% {
+    width: 0%;
+  }
 }
 
 .success {
