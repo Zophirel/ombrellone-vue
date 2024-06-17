@@ -1,5 +1,4 @@
 <template>
-
   <div id="bookingPage">    
     <aside :class="{openCalendar: this.isCalendarOpen, closeCalendar: this.closeCalendarClick}" id="sea" > 
       <p :class="{hideText: isCalendarOpen}">Mare</p> 
@@ -15,7 +14,7 @@
         <Ombrellone 
           :selectedPlace ="selectedPlace" 
           :date="localDate.date ?? new Date(parseInt(router.params.date))" 
-          :cellData="filteredbookingPerPlaceMap.get(placeIds[index])" 
+          :cellData="filteredBookingPerPlaceMap.get(placeIds[index])" 
           :cellId="placeIds[index]" v-for="(n, index) in this.getGridDimension(this.numberOfUmbrella)[0]" 
           @click="selectedPlace = placeIds[index]"/>
       </div>
@@ -26,12 +25,10 @@
         <Ombrellone
           :selectedPlace ="selectedPlace" 
           :date="localDate.date ?? new Date(parseInt(router.params.date))" 
-          :cellData="filteredbookingPerPlaceMap.get(placeIds[index + 80])" 
+          :cellData="filteredBookingPerPlaceMap.get(placeIds[index + 80])" 
           :cellId="placeIds[index + 80]" v-for="(n, index) in this.getGridDimension(this.numberOfUmbrella)[1]" 
           @click="selectedPlace =placeIds[index + 80]"/>
-
       </div>
-
     </div>
 </div>
 </template>
@@ -44,6 +41,7 @@ import { usePlaceStore } from "../../domain/place/placeStore";
 import Place from "../../domain/place/place";
 import { toRaw } from "vue";
 import { useRoute } from "vue-router";
+
 export default {
   name: "BookingPage",
   emits: ["openModal", "toggleCalendar"],
@@ -59,15 +57,17 @@ export default {
 
     let bookingPerPlace = placeStore.getBookingPerPlace;
      
-    let filteredbookingPerPlace = bookingPerPlace.filter((elem) => {
+    let filteredBookingPerPlace = bookingPerPlace.filter((elem) => {
       if(toRaw(elem) instanceof Place){
         return toRaw(elem);
       }
     });
 
-    const filteredbookingPerPlaceMap = new Map();
-    filteredbookingPerPlace.map((elem) => {
-      filteredbookingPerPlaceMap.set(`${elem.index}${elem.row}`, {beachId: elem.beachId, reservations: elem.reservations});
+    const filteredBookingPerPlaceMap = new Map();
+    
+    // Set place postion and its preiovious confirmed reservations 
+    filteredBookingPerPlace.map((elem) => {
+      filteredBookingPerPlaceMap.set(`${elem.index}${elem.row}`, {beachId: elem.beachId, reservations: elem.reservations});
     });
   
     let placeIds = [];
@@ -82,7 +82,7 @@ export default {
       }
     }
     
-    return { placeStore, filteredbookingPerPlaceMap, router, placeIds };
+    return { placeStore, filteredBookingPerPlaceMap, router, placeIds };
   },
 
   mounted() {
@@ -251,8 +251,9 @@ export default {
     align-content: center;
     row-gap: 2vmin;
     column-gap: 4.6vmin;
-    margin: 20px 0;
     width: calc(100vw - 50px);
+    background: #6798c0;
+    padding: 10px 10px 10px 0px;
   }
 
   .center-ctn{
