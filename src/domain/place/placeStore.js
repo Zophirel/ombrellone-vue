@@ -27,5 +27,5 @@ export const usePlaceStore = defineStore('place', {
         this.userBooking = list;
       }
     },
-    //persist: true,
+    persist: true,
 });

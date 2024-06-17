@@ -19,5 +19,5 @@ export const useUserStore = defineStore('user', {
         this.isLogin = false;
       }
     },
-    //persist: true,
+    persist: true,
 });
