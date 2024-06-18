@@ -22,7 +22,7 @@
 </template>
 <script>
 
-import { usePlaceStore } from "../../domain/place/placeStore";
+import { usePlaceStore } from "../../../domain/place/placeStore";
 import { useRouter } from "vue-router";
 export default {
   name: "BookedModal",
@@ -81,7 +81,7 @@ export default {
 </script>
 
 <style scoped>  
-  @import '../../authModals.css';
+  @import '/src/authModals.css';
 
   .tile{
     display: flex;

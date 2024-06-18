@@ -32,12 +32,12 @@
 </template>
 
 <script>
-    import ReservationModal from './reservation/ReservationModal.vue';
+    import ReservationModal from '../reservation/ReservationModal.vue';
     import BookedModal from './BookedModal.vue';
     import AccountModal from './AccountModal.vue';
-    import { useUserStore } from '../../domain/user/userStore';
+    import { useUserStore } from '../../../domain/user/userStore';
     import { useRouter } from 'vue-router';
-    import { UserRepository } from '../../data/repository/user';
+    import { UserRepository } from '../../../data/repository/user';
     export default {
         name: 'LoggedIn',
         props: {

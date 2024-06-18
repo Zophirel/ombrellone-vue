@@ -30,9 +30,9 @@
   </template>
   <script>
   
-  import { useUserStore } from "../../domain/user/userStore";
-  import ResponseNotification from "./auth/ResponseNotification.vue";
-  import { UserRepository } from "../../data/repository/user";
+  import { useUserStore } from "../../../domain/user/userStore";
+  import ResponseNotification from "../auth/ResponseNotification.vue";
+  import { UserRepository } from "../../../data/repository/user";
   export default {
     name: "AccountModal",
     emits:  ['closeModal'],
@@ -113,7 +113,7 @@
   </script>
   
   <style scoped>  
-    @import '../../authModals.css';
+    @import '/src/authModals.css';
     .user-info{
       display: flex;
       flex-direction: column;

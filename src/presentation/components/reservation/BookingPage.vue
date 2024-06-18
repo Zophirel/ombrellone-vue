@@ -35,10 +35,10 @@
     
 <script>
 
-import Calendar from "./reservation/Calendar.vue";
+import Calendar from "../reservation/Calendar.vue";
 import Ombrellone from "./Ombrellone.vue";
-import { usePlaceStore } from "../../domain/place/placeStore";
-import Place from "../../domain/place/place";
+import { usePlaceStore } from "../../../domain/place/placeStore";
+import Place from "../../../domain/place/place";
 import { toRaw } from "vue";
 import { useRoute } from "vue-router";
 

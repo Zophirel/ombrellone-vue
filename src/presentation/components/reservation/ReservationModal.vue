@@ -45,7 +45,7 @@
     
   
 <script>
-    import SeatCounter from '../SeatCounter.vue';    
+    import SeatCounter from './SeatCounter.vue';    
     import Calendar from './Calendar.vue';
     import PlaceList from './PlaceList.vue';
     import { useUserStore } from '../../../domain/user/userStore';
