@@ -1,31 +1,31 @@
 <template>
   <div class="wrapper">
-    <img @click="router.replace({name:'LoggedInDefault'})" src="/src/assets/arrow_right.svg"/>
+    <img @click="goBack()" src="/src/assets/arrow_right.svg"/>
     <div class="container">
       <h1 class="title">Pagamento</h1>
       <div class="resume">
         <div>
           <p class="label">Data</p>
-          <p>{{ new Date(getPaymentData.date).toLocaleDateString() }}</p>
+          <p>{{ paymentData.date.toLocaleDateString() }}</p>
         </div>
         <div>
           <p class="label">Nome</p>
-          <p>{{ getPaymentData.fullName }}</p>
+          <p>{{ paymentData.fullName }}</p>
         </div>
         <div>
           <p class="label">Posto</p>
-          <p>{{ getPaymentData.place }}</p>
+          <p>{{ paymentData.place }}</p>
         </div>
         <div>
           <p class="label">Prezzo</p>
-          <p>€{{ getPaymentData.price }}</p>
+          <p>€{{ paymentData.price }}</p>
         </div>
 
       </div>
       <form @submit.prevent="handleSubmit" class="order-form">
         <div class="form-group">
           <label for="numChairs" class="form-label" hidden>Number of Chairs:</label>
-          <input type="number" id="numChairs" :value="this.getPaymentData.chair" min="1" max="4" required class="form-input" disabled hidden/>
+          <input type="number" id="numChairs" :value="paymentData.chair" min="1" max="4" required class="form-input" disabled hidden/>
         </div>
         <div id="card-element" class="card-element"></div>
         <button type="submit" class="submit-btn">Pay</button>
@@ -36,8 +36,8 @@
       <p>o</p>
       <div class="order-form"> 
         <PayPalButton
-        :requestData="getPaymentData"
-        :chair=this.getPaymentData.chair
+        :requestData="paymentData"
+        :chair=paymentData.chair
       />
       </div>
 
@@ -50,6 +50,7 @@
   import { PaymentDatasource } from '../../../data/datasources/payment';
   import PayPalButton from './PayPalButton.vue';
   import { useRouter } from 'vue-router';
+  import { useUserStore } from '../../../domain/user/userStore';
 
   export default {
     name: 'Payment',
@@ -58,15 +59,11 @@
       paymentDataJSON: String
     },
 
-    computed: {
-      getPaymentData(){
-        return JSON.parse(this.paymentDataJSON) 
-      }
-    },
-
     setup(){
       const router = useRouter();
-      return { router }
+      const userStore = useUserStore();
+      const paymentData = userStore.getPaymentData;
+      return { router, paymentData, userStore }
     },
 
     data() {
@@ -100,7 +97,7 @@
           this.errorMessage = '';
           this.successMessage = '';
   
-          let data = this.getPaymentData;
+          let data = this.paymentData;
           let response = await PaymentDatasource.stripeCheckOut(data);
           console.log(response);          
           this.clientSecret = response.data.clientSecret;
@@ -110,7 +107,7 @@
             payment_method: {
               card: this.cardElement,
               billing_details: {
-                name: this.getPaymentData.fullName,
+                name: this.paymentData.fullName,
               }
             },
           });
@@ -118,13 +115,13 @@
           if (result.error) {
             console.log("result error message")
             this.errorMessage = result.error.message;
-            console.log(this.getPaymentData)  ;
           } else {
             this.successMessage = 'Payment successful!';
             let response = await PaymentDatasource.confirmStripePayment();
             console.log(response);
             if(response.status === 200){
               console.log("payment successful")
+              this.userStore.clearPaymentData();
               this.router.replace({name: "PaymentSuccess"});
             } else {
               console.log("payment failed")
@@ -133,9 +130,16 @@
           }
 
         } catch (e) {
+          console.log(e);
           this.errorMessage = 'An error occurred. Please try again.';
         }
+      },
+
+      async goBack(){
+        this.userStore.clearPaymentData();
+        await this.router.replace({name:'LoggedInDefault'})
       }
+
     }
   }
   </script>
