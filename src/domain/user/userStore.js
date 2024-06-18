@@ -1,11 +1,12 @@
 import { defineStore } from 'pinia'
 
 export const useUserStore = defineStore('user', {
-    state: () => ({ isLogin: false, user: null }),
+    state: () => ({ isLogin: false, user: null, payment: null }),
     
     getters: {
       isUserLogged: (state) => state.isLogin,
-      getUser: (state) => state.isLogin === true ? state.user : null
+      getUser: (state) => state.isLogin === true ? state.user : null,
+      getPaymentData: (state) => state.payment
     },
 
     actions: {
@@ -17,6 +18,10 @@ export const useUserStore = defineStore('user', {
       logOutUser() {
         this.user = null;
         this.isLogin = false;
+      },
+      
+      clearPaymentData() {
+        this.payment = null;
       }
     },
     persist: true,
