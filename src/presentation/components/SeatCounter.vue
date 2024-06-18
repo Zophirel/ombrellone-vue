@@ -11,6 +11,8 @@
     
   
 <script>
+    // Reservetion modal input for counting how may seat 
+    // the user want with his booking
     export default {
         name: 'SeatCounter',
         emits: ["addChair", "removeChair"],
@@ -21,16 +23,13 @@
         
         methods: {
             addChair(){
-            
                 if(this.chair < 4){
                     this.chair += 1;
                     this.$emit("addChair");
                 }
-                
             },
 
             removeChair(){
-            
                 if(this.chair > 1){
                     this.chair -= 1;
                     this.$emit("removeChair");
