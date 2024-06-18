@@ -145,7 +145,9 @@
                     price: this.calculateOrderAmount(this.chair)
                 }
 
-                this.router.push({path: `/payment/${JSON.stringify(data)}`})
+                this.userStore.payment = data;
+
+                await this.router.push({name: 'Payment'})
             },
 
             async goToBooking()  {   
