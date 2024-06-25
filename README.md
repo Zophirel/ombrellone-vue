@@ -154,6 +154,6 @@ The navigation across the features of the app can be found in the LoggedIn compo
 [Pinia](https://pinia.vuejs.org/ "Pinia") is used in order to persist components states inside the App, the implementations can be found under the `/domain/*store.js` folder, while the routing is handled by [Vue Router](https://router.vuejs.org/guide/advanced/composition-api "Vue Router") and can be found in the `router.js` file
 
 ## To-do
-- [X] <del>Web Socket<del> Server Sent Event communication to sync bookings across clients
+- [X] <del>Web Socket</del> Server Sent Event communication to sync bookings across clients
 - [ ] Delete / Modify reservations
 - [ ] Add email service (right now the password can be changed by accessing the `/resetpassword/<token>` route, the token is sent to the client directly)
