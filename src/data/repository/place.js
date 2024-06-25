@@ -34,22 +34,23 @@ export const PlaceRepository = {
         } 
     },
 
-    saveReservationInLocalStore: (booking) =>{     
+    saveReservationInLocalStore: (bookingEvent) =>{     
         const placeStore = usePlaceStore();
-        
-        placeStore.getBookingPerPlace.filter((elem) => {
-            if(elem.index){
-                if(elem.index === booking.placeIndex && elem.row === booking.placeRow){
-                    elem.reservations.push(booking.date); 
-                    return true;
+        if(!bookingEvent.qrData){
+            placeStore.getBookingPerPlace.filter((elem) => {
+                if(elem.index){
+                    if(elem.index === bookingEvent.placeIndex && elem.row === bookingEvent.placeRow){
+                        elem.reservations.push(bookingEvent.date); 
+                        console.log("data saved")
+                        return true;
+                    }
                 }
-            }
-        });
-
+            }); 
+        }
         if(placeStore.getUserBooking === null){
-            placeStore.setUserBooking([booking]);
+            placeStore.setUserBooking([bookingEvent]);
         } else {
-            placeStore.getUserBooking.push(booking);
+            placeStore.getUserBooking.push(bookingEvent);
         }
     },
 

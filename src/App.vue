@@ -1,14 +1,21 @@
 <template>
-<RouterView v-slot="{ Component, route }">
-  <Transition :name="route.meta.transition">
-    <component 
-    :showLoginModal="this.showLoginModal && !userStore.isUserLogged"
-    :is="Component" 
-    @handleMouseWheel = handleMouseWheel
-    @handleTouchMove = handleMouseWheel
-    />
-  </Transition>
-</RouterView>
+  <main id="app">
+    <div v-show="notify" class="notification-bg">
+      <div class="notification-box">
+        <p>La prenotazione corrente è stata appena presa</p>
+      </div>
+    </div>
+    <RouterView v-slot="{ Component, route }">
+      <Transition :name="route.meta.transition">
+        <component 
+        :showLoginModal="this.showLoginModal && !userStore.isUserLogged"
+        :is="Component" 
+        @handleMouseWheel = handleMouseWheel
+        @handleTouchMove = handleMouseWheel
+        />
+      </Transition>
+    </RouterView>
+  </main>
 </template>
 
 <script>
@@ -16,6 +23,9 @@
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from './domain/user/userStore';
 import HomePage from './presentation/components/HomePage.vue'
+import { usePlaceStore } from './domain/place/placeStore';
+import { PlaceRepository } from './data/repository/place';
+import eventBus from './eventBus';
 
 export default {
   name: 'App',
@@ -36,6 +46,7 @@ export default {
     const router = useRouter();
     const route = useRoute();
     const userStore = useUserStore();
+    const placeStore = usePlaceStore();
     
     if(userStore.isLogin){
       router.push({name: "LoggedInDefault"})
@@ -43,9 +54,12 @@ export default {
 
     return {
       route,
-      userStore,  
+      router,
+      userStore,
+      placeStore
     }
   },
+
   data(){
     return {
       fullName: "Mario Rossi",
@@ -55,11 +69,34 @@ export default {
       isModalVisible: false,
       clickedPlace: "",
       showLoginModal: false,
-      isOverflowHidden: false
+      isOverflowHidden: false,
+      messages: [],
+      notify: false
     };
   },
-
+  created() {
+    eventBus.on('new-message', this.addMessage);
+  },
+  beforeUnmount() {
+    eventBus.off('new-message', this.addMessage);
+  },
   methods: {
+    addMessage(data) {
+      console.log(data);
+      this.messages.push(data);
+      PlaceRepository.saveReservationInLocalStore(data);
+      if(this.userStore.getPaymentData != null){
+        if(this.userStore.getPaymentData.place == `${data.placeIndex}${data.placeRow}`){
+          console.log("BOOKING IS NOT VALID ANYMORE")
+          this.router.back();
+          this.notify = true;
+          setTimeout(() => {
+            this.notify = false;
+          }, 4000);
+        }
+      }
+    },
+    
     handleTouchMove() {
       console.log("handle touch move");
       if(this.userStore.isUserLogged){
@@ -105,6 +142,40 @@ export default {
 </script>
 
 <style>
+
+.notification-bg {
+  position: absolute;
+  z-index: 1;
+  width: 100%;
+  margin: 0 auto;
+  top: -50px;
+  animation: notificationAnimation 4s ease-in-out ;
+}
+
+@keyframes notificationAnimation {
+  0% {
+    top: -50px;
+  }
+
+  20% {
+    top: 0px;
+  }
+
+  80% {
+    top: 0px;
+  }
+
+  100% {
+    top: -50px;
+  }
+}
+
+.notification-box {
+  background-color: rgb(250, 89, 89);
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
